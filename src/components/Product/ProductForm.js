@@ -69,7 +69,7 @@ const ProductForm = ({ onSubmit, product }) => {
                 required
                 className="border p-2 mr-2"
             />
-            <button type="submit" className="bg-blue-500 text-white p-2">
+            <button type="submit" className="bg-blue-500 text-B p-2">
                 {product ? 'Update Product' : 'Create Product'}
             </button>
         </form>

@@ -9,10 +9,10 @@ const ProductList = ({ products, onEdit, onDelete }) => {
                     <li key={product.id} className="mb-2 flex justify-between">
                         <span>{product.name} - ${product.price}</span>
                         <div>
-                            <button onClick={() => onEdit(product)} className="bg-yellow-500 text-white p-1 mr-2">
+                            <button onClick={() => onEdit(product)} className="bg-yellow-500 text-B p-1 mr-2">
                                 Edit
                             </button>
-                            <button onClick={() => onDelete(product.id)} className="bg-red-500 text-white p-1">
+                            <button onClick={() => onDelete(product.id)} className="bg-red-500 text-B p-1">
                                 Delete
                             </button>
                         </div>

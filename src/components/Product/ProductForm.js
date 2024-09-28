@@ -3,6 +3,9 @@ import React, { useState, useEffect } from 'react';
 const ProductForm = ({ onSubmit, product }) => {
     const [name, setName] = useState('');
     const [price, setPrice] = useState('');
+    const [description, setDescription] = useState('');
+    const [availableQuantity, setAvailableQuantity] = useState('');
+    const [category, setCategory] = useState('');
 
     useEffect(() => {
         if (product) {

@@ -31,58 +31,73 @@ const UserForm = ({ onSubmit, user }) => {
     };
 
     return (
-        <form onSubmit={handleSubmit} className="mb-4">
-            <input
-                type="text"
-                placeholder="First Name"
-                value={firstName}
-                onChange={(e) => setFirstName(e.target.value)}
-                required
-                className="border p-2 mr-2"
-            />
-            <input
-                type="text"
-                placeholder="Last Name"
-                value={lastName}
-                onChange={(e) => setLastName(e.target.value)}
-                required
-                className="border p-2 mr-2"
-            />
-            <input
-                type="email"
-                placeholder="Email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                className="border p-2 mr-2"
-            />
-            <input
-                type="password"
-                placeholder="Password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required={!user} 
-                className="border p-2 mr-2"
-            />
-            <input
-                type="text"
-                placeholder="Address"
-                value={address}
-                onChange={(e) => setAddress(e.target.value)}
-                className="border p-2 mr-2"
-            />
-            <input
-                type="text"
-                placeholder="Phone Number"
-                value={phoneNumber}
-                onChange={(e) => setPhoneNumber(e.target.value)}
-                className="border p-2 mr-2"
-            />
-            <button type="submit" className="bg-blue-500 text-white p-2">
+        <form onSubmit={handleSubmit} className="float-right">
+            <div class="mb-3">
+                <input
+                    type="text"
+                    placeholder="First Name"
+                    value={firstName}
+                    onChange={(e) => setFirstName(e.target.value)}
+                    required
+                    className="border p-2 mr-2"
+                />
+            </div>
+            <div class="l-3">
+                <input
+                    type="text"
+                    placeholder="Last Name"
+                    value={lastName}
+                    onChange={(e) => setLastName(e.target.value)}
+                    required
+                    className="border p-2 mr-2"
+                />
+            </div>
+            <div class="mb-3">
+                <input
+                    type="email"
+                    class="form-control"
+                    placeholder="Email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                    aria-describedby="emailHelp"
+                    className="border p-2 mr-2"
+                />
+            </div>
+
+            <div class="mb-3">
+                <input
+                    type="password"
+                    placeholder="Password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required={!user} 
+                    className="border p-2 mr-2"
+                />
+            </div>
+            <div class="mb-3">
+                <input
+                    type="text"
+                    placeholder="Address"
+                    value={address}
+                    onChange={(e) => setAddress(e.target.value)}
+                    className="border p-2 mr-2"
+                />
+            </div>
+            <div class="mb-3">
+                <input
+                    type="text"
+                    placeholder="Phone Number"
+                    value={phoneNumber}
+                    onChange={(e) => setPhoneNumber(e.target.value)}
+                    className="border p-2 mr-2"
+                />
+            </div>
+            <button type="submit" className="bg-blue-500 text-B p-2">
                 {user ? 'Update User' : 'Create User'}
             </button>
         </form>
     );
-};
+};  
 
 export default UserForm;

@@ -24,13 +24,16 @@ const UserDetails = () => {
     }
 
     return (
-        <div>
-            <h1>User Details</h1>
-            <p>Name: {user.firstName} {user.lastName}</p>
-            <p>Email: {user.email}</p>
-            <p>Address: {user.address}</p>
-            <p>Phone Number: {user.phoneNumber}</p>
-        </div>
+            <div class="pt-6 md:p-8 text-center md:text-left space-y-4">
+
+                
+                    <h1 >User Details</h1>
+                    <div></div><p>Name: {user.firstName} {user.lastName}</p>
+                    <p>Email: {user.email}</p>
+                    <p>Address: {user.address}</p>
+                    <p>Phone Number: {user.phoneNumber}</p>
+                
+            </div>
     );
 };
 

@@ -7,6 +7,7 @@ import UserList from './UserList';
 const UserManagement = () => {
     const [users, setUsers] = useState([]);
     const [editingUser, setEditingUser] = useState(null);
+    const [imageFile, setImageFile] = useState(null); // Assurez-vous que cette variable est déclarée
     const navigate = useNavigate(); 
 
     useEffect(() => {
@@ -22,15 +23,25 @@ const UserManagement = () => {
         }
     };
 
+    const handleImageChange = (event) => {
+        setImageFile(event.target.files[0]); // Met à jour imageFile avec le fichier téléchargé
+    };
+
     const handleCreateOrUpdateUser = async (user) => {
+        const formData = new FormData();
+        formData.append("user", JSON.stringify(user));
+        if (imageFile) {
+            formData.append("image", imageFile);
+        }
+    
         try {
             if (editingUser) {
-                await updateUser(editingUser.id, user);
+                await updateUser(editingUser.id, formData);
                 setEditingUser(null);
             } else {
-                await createUser(user);
+                await createUser(formData);
             }
-            fetchUsers(); 
+            await fetchUsers(); 
         } catch (error) {
             console.error('Error creating/updating user:', error);
         }
@@ -56,6 +67,7 @@ const UserManagement = () => {
     return (
         <div>
             <h2 className="text-xl mb-4">User Management</h2>
+            <input type="file" onChange={handleImageChange} />
             <UserForm onSubmit={handleCreateOrUpdateUser} user={editingUser} />
             <UserList 
                 users={users} 

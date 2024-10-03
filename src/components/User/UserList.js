@@ -14,7 +14,13 @@ const UserList = ({ users, onEdit, onDelete, onShow }) => {
                         Edit
                     </button>
                     <button
-                        onClick={() => onShow(user.id)} 
+                        onClick={() => {
+                            if (user.id) { 
+                                onShow(user.id); 
+                            } else {
+                                console.error("User ID is null or undefined");
+                            }
+                        }}
                         className="ml-2 bg-blue-500 text-B p-1">
                         Show
                     </button>

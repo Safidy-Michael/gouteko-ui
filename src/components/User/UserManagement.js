@@ -7,7 +7,6 @@ import UserList from './UserList';
 const UserManagement = () => {
     const [users, setUsers] = useState([]);
     const [editingUser, setEditingUser] = useState(null);
-    const [imageFile, setImageFile] = useState(null); // Assurez-vous que cette variable est déclarée
     const navigate = useNavigate(); 
 
     useEffect(() => {
@@ -23,33 +22,24 @@ const UserManagement = () => {
         }
     };
 
-    const handleImageChange = (event) => {
-        setImageFile(event.target.files[0]); // Met à jour imageFile avec le fichier téléchargé
-    };
-
     const handleCreateOrUpdateUser = async (user) => {
-        const formData = new FormData();
-        formData.append("user", JSON.stringify(user));
-        if (imageFile) {
-            formData.append("image", imageFile);
-        }
-    
         try {
             if (editingUser) {
-                await updateUser(editingUser.id, formData);
-                setEditingUser(null);
+                await updateUser(editingUser.id, user); // user contient déjà l'image
+                setEditingUser(null); 
             } else {
-                await createUser(formData);
+                await createUser(user); // user contient déjà l'image
             }
-            await fetchUsers(); 
+            await fetchUsers();
         } catch (error) {
             console.error('Error creating/updating user:', error);
         }
     };
+    
 
     const handleDeleteUser = async (id) => {
         try {
-            await deleteUser(id);
+            await deleteUser(id); // Supprimez l'utilisateur
             fetchUsers(); 
         } catch (error) {
             console.error('Error deleting user:', error);
@@ -57,17 +47,16 @@ const UserManagement = () => {
     };
 
     const handleEditUser = (user) => {
-        setEditingUser(user); 
+        setEditingUser(user); // Définir l'utilisateur en cours d'édition
     };
 
     const handleShowUser = (userId) => {
-        navigate(`/users/${userId}`); 
+        navigate(`/users/${userId}`); // Navigation vers la page de l'utilisateur
     };
 
     return (
         <div>
             <h2 className="text-xl mb-4">User Management</h2>
-            <input type="file" onChange={handleImageChange} />
             <UserForm onSubmit={handleCreateOrUpdateUser} user={editingUser} />
             <UserList 
                 users={users} 

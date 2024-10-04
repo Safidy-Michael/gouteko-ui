@@ -7,6 +7,7 @@ const UserForm = ({ onSubmit, user }) => {
     const [password, setPassword] = useState('');
     const [address, setAddress] = useState('');
     const [phoneNumber, setPhoneNumber] = useState('');
+    const [image, setImage] = useState(null);
 
     useEffect(() => {
         if (user) {
@@ -16,23 +17,31 @@ const UserForm = ({ onSubmit, user }) => {
             setPassword('');
             setAddress(user.address || '');
             setPhoneNumber(user.phoneNumber || '');
+            setImage(null); 
         }
     }, [user]);
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        onSubmit({ firstName, lastName, email, password, address, phoneNumber });
-        setFirstName('');
-        setLastName('');
-        setEmail('');
-        setPassword('');
-        setAddress('');
-        setPhoneNumber('');
+        const formData = new FormData();
+
+        formData.append('firstName', firstName);
+        formData.append('lastName', lastName);
+        formData.append('email', email);
+        formData.append('password', password);
+        formData.append('address', address);
+        formData.append('phoneNumber', phoneNumber);
+
+        if (image) {
+            formData.append('image', image);
+        }
+
+        onSubmit(formData);
     };
 
     return (
         <form onSubmit={handleSubmit} className="float-right">
-            <div class="mb-3">
+            <div className="mb-3">
                 <input
                     type="text"
                     placeholder="First Name"
@@ -42,7 +51,7 @@ const UserForm = ({ onSubmit, user }) => {
                     className="border p-2 mr-2"
                 />
             </div>
-            <div class="l-3">
+            <div className="mb-3">
                 <input
                     type="text"
                     placeholder="Last Name"
@@ -52,20 +61,17 @@ const UserForm = ({ onSubmit, user }) => {
                     className="border p-2 mr-2"
                 />
             </div>
-            <div class="mb-3">
+            <div className="mb-3">
                 <input
                     type="email"
-                    class="form-control"
                     placeholder="Email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
-                    aria-describedby="emailHelp"
                     className="border p-2 mr-2"
                 />
             </div>
-
-            <div class="mb-3">
+            <div className="mb-3">
                 <input
                     type="password"
                     placeholder="Password"
@@ -75,7 +81,7 @@ const UserForm = ({ onSubmit, user }) => {
                     className="border p-2 mr-2"
                 />
             </div>
-            <div class="mb-3">
+            <div className="mb-3">
                 <input
                     type="text"
                     placeholder="Address"
@@ -84,7 +90,7 @@ const UserForm = ({ onSubmit, user }) => {
                     className="border p-2 mr-2"
                 />
             </div>
-            <div class="mb-3">
+            <div className="mb-3">
                 <input
                     type="text"
                     placeholder="Phone Number"
@@ -93,11 +99,18 @@ const UserForm = ({ onSubmit, user }) => {
                     className="border p-2 mr-2"
                 />
             </div>
+            <div className="mb-3">
+                <input
+                    type="file"
+                    onChange={(e) => setImage(e.target.files[0])}
+                    required={!user}
+                />
+            </div>
             <button type="submit" className="bg-blue-500 text-B p-2">
                 {user ? 'Update User' : 'Create User'}
             </button>
         </form>
     );
-};  
+};
 
 export default UserForm;

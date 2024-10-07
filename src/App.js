@@ -4,17 +4,20 @@ import UserManagement from './components/User/UserManagement'; // Nouveau compos
 import ProductManagement from './components/Product/ProductManagement'; // Nouveau composant
 import OrderManagement from './components/Order/OrderManagement'; // Nouveau composant
 import UserDetails from './components/User/UserDetails'; 
+import OrderDetails from './components/Order/OrderDetails';
+
+import './index.css';
 
 const App = () => {
     return (
         <Router>
             <div className="container mx-auto p-4">
-                <h1 className="text-2xl mb-4">Gestion des Ressources</h1>
                 <Routes>
                     <Route path="/users" element={<UserManagement />} />
                     <Route path="/products" element={<ProductManagement />} />
                     <Route path="/orders" element={<OrderManagement />} />
                     <Route path="/users/:id" element={<UserDetails />} />
+                    <Route path="/orders/:id" element={<OrderDetails />} />
                 </Routes>
             </div>
         </Router>

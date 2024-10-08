@@ -10,9 +10,9 @@ const UserList = ({ users, onEdit, onDelete, onShow }) => {
                          
                     <button
                         onClick={() => onEdit(user)}
-                        className="ml-2 bg-yellow-500 text-B p-1 ">
+                        className="btn btn-outline-danger bg-danger text-white px-2 me-2 py-1 rounded">
                         Edit
-                    </button>
+                    </button>   
                     <button
                         onClick={() => {
                             if (user.id) { 
@@ -21,12 +21,12 @@ const UserList = ({ users, onEdit, onDelete, onShow }) => {
                                 console.error("User ID is null or undefined");
                             }
                         }}
-                        className="ml-2 bg-blue-500 text-B p-1">
+                        className="btn btn-outline-danger bg-danger text-white px-2 me-2 py-1 rounded">
                         Show
                     </button>
                     <button
                         onClick={() => onDelete(user.id)}
-                        className="ml-2 bg-red-500 text-B p-1">
+                        className="btn btn-outline-danger bg-danger text-white px-2 me-2 py-1 rounded">
                         Delete
                     </button>
                 </li>

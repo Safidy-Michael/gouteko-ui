@@ -106,7 +106,7 @@ const UserForm = ({ onSubmit, user }) => {
                     required={!user}
                 />
             </div>
-            <button type="submit" className="bg-blue-500 text-B p-2">
+            <button type="submit" className="btn btn-primary bg-green-500 text-B px-4 py-2 mt-4 rounded">
                 {user ? 'Update User' : 'Create User'}
             </button>
         </form>

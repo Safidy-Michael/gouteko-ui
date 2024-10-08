@@ -25,13 +25,13 @@ const UserDetails = () => {
     }
 
     return (
-        <div className="pt-6 md:p-8 text-center md:text-left space-y-4">
+        <div className="border border-1 pt-6 md:p-8   md:text-left space-y-4 w-50  px-4 py-2 ">
             <h1>User Details</h1>
             {user.imageBase64 ? (
                <img
                src={user.imageBase64}
                alt="User"
-               className="w-32 h-32 rounded-full"
+               className="rounded w-25"
            />
            
             ) : (

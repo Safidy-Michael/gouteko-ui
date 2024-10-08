@@ -9,7 +9,6 @@ const OrderManagement = () => {
     const [currentOrder, setCurrentOrder] = useState(null);
     const navigate = useNavigate();
 
-    // Récupérer la liste des commandes lors du chargement du composant
     useEffect(() => {
         fetchOrders();
     }, []);
@@ -55,7 +54,7 @@ const OrderManagement = () => {
     const handleShowOrder = (orderId) => {
         if (orderId) {
             console.log('Navigating to order ID:', orderId);
-            navigate(`/orders/${orderId}`); // Navigue vers les détails de la commande avec le bon ID
+            navigate(`/orders/${orderId}`);
         } else {
             console.error('L\'ID de la commande est manquant');
         }
@@ -72,7 +71,7 @@ const OrderManagement = () => {
             <OrderList 
                 orders={orders} 
                 onDelete={handleDeleteOrder} 
-                onShowDetails={handleShowOrder} // Passer la fonction pour afficher les détails
+                onShowDetails={handleShowOrder} 
             />
         </div>
     );

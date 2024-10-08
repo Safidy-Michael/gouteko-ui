@@ -2,23 +2,31 @@ import React from 'react';
 
 const ProductList = ({ products, onEdit, onDelete }) => {
     return (
-        <div>
-            <h2 className="text-xl mb-2">Product List</h2>
-            <ul>
+        <div className="py-4">
+            <h2 className="text-xl mb-4">Product List</h2>
+            <div className="row">
                 {products.map((product) => (
-                    <li key={product.id} className="mb-2 flex justify-between">
-                        <span>{product.name} - ${product.price}</span>
-                        <div>
-                            <button onClick={() => onEdit(product)} className="bg-yellow-500 text-B p-1 mr-2">
-                                Edit
-                            </button>
-                            <button onClick={() => onDelete(product.id)} className="bg-red-500 text-B p-1">
-                                Delete
-                            </button>
+                    <div key={product.id} className="col-md-4 col-sm-6 mb-3">
+                        <div className="p-3 border border-secondary rounded h-100">
+                            <span>{product.name} - {product.price} ar</span>
+                            <div className="mt-2"> 
+                                <button
+                                    onClick={() => onEdit(product)}
+                                    className="btn btn-outline-danger bg-danger text-white px-2 me-2 py-1 rounded"
+                                >
+                                    Edit
+                                </button>
+                                <button
+                                    onClick={() => onDelete(product.id)}
+                                    className="btn btn-outline-danger bg-danger text-white px-2 me-2 py-1 rounded"
+                                >
+                                    Delete
+                                </button>
+                            </div>
                         </div>
-                    </li>
+                    </div>
                 ))}
-            </ul>
+            </div>
         </div>
     );
 };

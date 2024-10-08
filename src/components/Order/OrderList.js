@@ -8,7 +8,7 @@ const OrderList = ({ orders, onShowDetails }) => {
                 {orders.map(order => (
                     <div key={order.id} className="col-md-4 mb-3"> 
                         <div className="p-3 border border-secondary rounded">
-                            <p>{order.userName} - {order.totalAmount} arriary</p>
+                            <p>{order.userName} - {order.totalAmount} ar</p>
                             <button 
                                 onClick={() => onShowDetails(order.id)} 
                                 className="btn btn-outline-danger bg-danger text-white px-2 py-1 rounded"

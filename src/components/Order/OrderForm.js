@@ -5,27 +5,25 @@ import axios from 'axios'; // Pour récupérer les produits depuis le backend
 const OrderForm = () => {
     const [firstName, setFirstName] = useState('');
     const [address, setAddress] = useState('');
-    const [products, setProducts] = useState([]); // Stocke les produits disponibles
-    const [selectedProducts, setSelectedProducts] = useState([]); // Stocke les produits sélectionnés et leurs quantités
-    const [loading, setLoading] = useState(true); // Indique si les produits sont en train de charger
-    const [error, setError] = useState(null); // Stocke les erreurs de chargement
+    const [products, setProducts] = useState([]);
+    const [selectedProducts, setSelectedProducts] = useState([]); 
+    const [loading, setLoading] = useState(true); 
+    const [error, setError] = useState(null); 
 
-    // Récupérer la liste des produits depuis le backend
     useEffect(() => {
         const fetchProducts = async () => {
             try {
-                const response = await axios.get('http://localhost:8080/product/'); // Adapter selon l'URL de ton API
-                setProducts(response.data); // On suppose que la réponse contient une liste d'objets { id, name, unit, price }
-                setLoading(false); // Les produits sont chargés
+                const response = await axios.get('http://localhost:8080/product/'); 
+                setProducts(response.data);
+                setLoading(false);
             } catch (error) {
                 setError('Erreur lors de la récupération des produits');
-                setLoading(false); // Arrêter le chargement même en cas d'erreur
+                setLoading(false); 
             }
         };
         fetchProducts();
     }, []);
 
-    // Gérer l'ajout d'un produit avec le bouton "+"
     const handleAddProduct = (product) => {
         const existingProduct = selectedProducts.find(p => p.productName === product.name);
         if (existingProduct) {
@@ -37,7 +35,6 @@ const OrderForm = () => {
         }
     };
 
-    // Gérer la diminution d'un produit avec le bouton "-"
     const handleRemoveProduct = (product) => {
         const existingProduct = selectedProducts.find(p => p.productName === product.name);
         if (existingProduct && existingProduct.quantity > 1) {
@@ -49,7 +46,6 @@ const OrderForm = () => {
         }
     };
 
-    // Soumettre la commande
     const handleSubmit = async (e) => {
         e.preventDefault();
         const orderRequest = {
@@ -60,11 +56,11 @@ const OrderForm = () => {
 
         try {
             const response = await placeOrder(orderRequest);
-            console.log('Commande passée:', response.data); // Affiche la réponse
-            // Réinitialiser le formulaire après soumission
+            console.log('Commande passée:', response.data); 
+            
             setFirstName('');
             setAddress('');
-            setSelectedProducts([]); // Réinitialiser les produits sélectionnés
+            setSelectedProducts([]); 
         } catch (error) {
             console.error('Erreur lors de la commande', error);
         }
@@ -73,24 +69,33 @@ const OrderForm = () => {
     return (
         <form onSubmit={handleSubmit}>
             <h2>Passer commande</h2>
-            <div>
+
+
+                    <div className="mb-3 w-25">
+                    <label htmlFor="firstName" className="form-label">Prénom</label>
                 <input 
                     type="text" 
+                    className="form-control" 
+                    id="firstName" 
                     placeholder="Prénom" 
                     value={firstName} 
                     onChange={(e) => setFirstName(e.target.value)} 
                     required 
                 />
-            </div>
-            <div>
+                </div>
+
+                <div className="mb-3 w-25">
+                    <label htmlFor="address" className="form-label">Adresse</label>
                 <input 
                     type="text" 
+                    className="form-control" 
+                    id="address" 
                     placeholder="Adresse" 
                     value={address} 
                     onChange={(e) => setAddress(e.target.value)} 
                     required 
                 />
-            </div>
+                </div>
 
             <h3>Produits disponibles</h3>
 
@@ -98,26 +103,26 @@ const OrderForm = () => {
             {error && <p>{error}</p>}
 
             {!loading && !error && (
-                <ul>
+                <ul className="row list-unstyled">
                     {products.map((product) => (
-                        <li key={product.id} className="mb-4 p-2 border border-gray-300 rounded">
+                        <li key={product.id} className="col-md-4 me-4 mb-2 p-2  w-25 border border-10 rounded">
                             <div className="flex justify-between items-center">
                                 <div>
                                     <p>{product.name} ({product.unit})</p>
-                                    <p>Prix : ${product.price.toFixed(2)}</p>
+                                    <p>Prix : {product.price.toFixed(2)} ariary</p>
                                 </div>
                                 <div>
                                     <button 
                                         type="button" 
                                         onClick={() => handleAddProduct(product)} 
-                                        className="mr-2 bg-blue-500 text-B px-2 py-1 rounded"
+                                        className=" btn btn-outline-danger mr-2 bg-danger bg-blue-500 text-white px-2 py-1 rounded"
                                     >
                                         +
                                     </button>
                                     <button 
                                         type="button" 
                                         onClick={() => handleRemoveProduct(product)} 
-                                        className="bg-red-500 text-B px-2 py-1 rounded"
+                                        className=" btn btn-outline-danger bg-danger m-2 p-2 text-white px-2 py-1 rounded"
                                     >
                                         -
                                     </button>
@@ -137,7 +142,7 @@ const OrderForm = () => {
                 ))}
             </ul>
 
-            <button type="submit" className="bg-green-500 text-B px-4 py-2 mt-4 rounded">
+            <button type="submit" className=" btn btn-primary bg-green-500 text-B px-4 py-2 mt-4 rounded">
                 Passer commande
             </button>
         </form>

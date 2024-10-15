@@ -1,8 +1,11 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import UserManagement from './components/User/UserManagement'; // Nouveau composant
-import ProductManagement from './components/Product/ProductManagement'; // Nouveau composant
-import OrderManagement from './components/Order/OrderManagement'; // Nouveau composant
+import LoginPage from './components/LoginPage';
+import SignupPage from './components/SignUpPage';
+import Dashboard from './components/Dashboard';
+import UserManagement from './components/User/UserManagement'; 
+import ProductManagement from './components/Product/ProductManagement'; 
+import OrderManagement from './components/Order/OrderManagement'; 
 import UserDetails from './components/User/UserDetails'; 
 import OrderDetails from './components/Order/OrderDetails';
 
@@ -13,6 +16,9 @@ const App = () => {
         <Router>
             <div className="container mx-auto p-4">
                 <Routes>
+                    <Route path="/" element={<LoginPage />} />
+                    <Route path="/signup" element={<SignupPage />} />
+                    <Route path="/dashboard" element={<Dashboard />} />
                     <Route path="/users" element={<UserManagement />} />
                     <Route path="/products" element={<ProductManagement />} />
                     <Route path="/orders" element={<OrderManagement />} />
@@ -24,4 +30,4 @@ const App = () => {
     );
 };
 
-export default App; 
+export default App;

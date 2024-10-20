@@ -1,29 +1,33 @@
 import React, { useState } from 'react';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { MDBContainer, MDBInput } from 'mdb-react-ui-kit';
+import axios from 'axios';
 
 function LoginPage() {
-    const [email, setEmail] = useState(''); 
+    const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
-    const navigate = useNavigate(); 
+    const navigate = useNavigate();
 
     const handleLogin = async () => {
         try {
             if (!email || !password) {
-                setError('Please enter both email and password.'); 
+                setError('Please enter both email and password.');
                 return;
             }
-
-            const response = await axios.post('http://localhost:8080/auth/login', { 
+            
+            const response = await axios.post('http://localhost:8080/auth/login', {
                 email,
-                password 
+                password,
             });
 
             console.log('Login successful:', response.data);
-            localStorage.setItem('token', response.data.token); 
-            navigate('/dashboard'); 
+
+            const { id, token } = response.data; 
+
+            localStorage.setItem('token', token); 
+
+            navigate(`/users/${id}`); 
         } catch (error) {
             console.error('Login failed:', error.response ? error.response.data : error.message);
             setError('Invalid email or password.'); 
@@ -39,9 +43,9 @@ function LoginPage() {
                         wrapperClass='mb-4' 
                         placeholder='Email address' 
                         id='email' 
-                        value={email}
+                        value={email} 
                         type='email' 
-                        onChange={(e) => setEmail(e.target.value)}
+                        onChange={(e) => setEmail(e.target.value)} 
                     />
                     <MDBInput 
                         wrapperClass='mb-4' 

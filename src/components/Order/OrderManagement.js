@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { createOrder, getOrders, updateOrder, deleteOrder } from '../../api/orderApi';
+import { placeOrder, getOrders, updateOrder, deleteOrder } from '../../api/orderApi';
 import OrderForm from './OrderForm';
 import OrderList from './OrderList';
 import { useNavigate } from 'react-router-dom';
-
+ 
+const token = localStorage.getItem('token');
 const OrderManagement = () => {
     const [orders, setOrders] = useState([]);
     const [currentOrder, setCurrentOrder] = useState(null);
@@ -22,9 +23,9 @@ const OrderManagement = () => {
         }
     };
 
-    const handleCreateOrder = async (order) => {
+    const handleplaceOrder = async (order) => {
         try {
-            await createOrder(order);
+            await placeOrder(order);
             fetchOrders();
             setCurrentOrder(null);
         } catch (error) {
@@ -54,7 +55,11 @@ const OrderManagement = () => {
     const handleShowOrder = (orderId) => {
         if (orderId) {
             console.log('Navigating to order ID:', orderId);
-            navigate(`/orders/${orderId}`);
+            navigate(`/orders/${orderId}`,{
+                header : {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
         } else {
             console.error('L\'ID de la commande est manquant');
         }
@@ -64,7 +69,7 @@ const OrderManagement = () => {
         <div>
             <h1 className="text-2xl mb-4">Gestion des Commandes</h1>
             <OrderForm 
-                onSubmit={currentOrder ? handleUpdateOrder : handleCreateOrder} 
+                onSubmit={currentOrder ? handleUpdateOrder : handleplaceOrder} 
                 order={currentOrder} 
                 setOrder={setCurrentOrder} 
             />

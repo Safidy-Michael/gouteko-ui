@@ -16,6 +16,7 @@ export const createUser = async (formData) => {
     const response = await axios.post(`${API_URL}/create`, formData, {
         headers: {
             'Content-Type': 'multipart/form-data',
+            'Authorization': `Bearer ${token}` 
         }
     });
     return response.data;
@@ -32,7 +33,11 @@ export const updateUser = async (id, user) => {
 };
 
 export const deleteUser = async (id) => {
-    await axios.delete(`${API_URL}/${id}`);
+    await axios.delete(`${API_URL}/${id}`, {
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    });
 };
 
 export const getUserById = async (id) => {

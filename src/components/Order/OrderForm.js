@@ -1,26 +1,33 @@
 import React, { useState, useEffect } from 'react';
 import { placeOrder } from '../../api/orderApi';
-import axios from 'axios'; // Pour récupérer les produits depuis le backend
+import axios from 'axios'; 
 
 const OrderForm = () => {
     const [firstName, setFirstName] = useState('');
     const [address, setAddress] = useState('');
     const [products, setProducts] = useState([]);
-    const [selectedProducts, setSelectedProducts] = useState([]); 
-    const [loading, setLoading] = useState(true); 
-    const [error, setError] = useState(null); 
+    const [selectedProducts, setSelectedProducts] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
     useEffect(() => {
         const fetchProducts = async () => {
+            setLoading(true);
+            const token = localStorage.getItem('token');
             try {
-                const response = await axios.get('http://localhost:8080/product/'); 
+                const response = await axios.get('http://localhost:8080/product/', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                    },
+                });
                 setProducts(response.data);
-                setLoading(false);
             } catch (error) {
                 setError('Erreur lors de la récupération des produits');
-                setLoading(false); 
+            } finally {
+                setLoading(false);
             }
         };
+        
         fetchProducts();
     }, []);
 
@@ -60,9 +67,14 @@ const OrderForm = () => {
             
             setFirstName('');
             setAddress('');
-            setSelectedProducts([]); 
+            setSelectedProducts([]);
+
+            alert('Commande passée avec succès !'); 
+            
+        
         } catch (error) {
             console.error('Erreur lors de la commande', error);
+            setError('Erreur lors de la création de la commande.');
         }
     };
 
@@ -70,9 +82,8 @@ const OrderForm = () => {
         <form onSubmit={handleSubmit}>
             <h2>Passer commande</h2>
 
-
-                    <div className="mb-3 w-25">
-                    <label htmlFor="firstName" className="form-label">Prénom</label>
+            <div className="mb-3 w-25">
+                <label htmlFor="firstName" className="form-label">Prénom</label>
                 <input 
                     type="text" 
                     className="form-control" 
@@ -82,10 +93,10 @@ const OrderForm = () => {
                     onChange={(e) => setFirstName(e.target.value)} 
                     required 
                 />
-                </div>
+            </div>
 
-                <div className="mb-3 w-25">
-                    <label htmlFor="address" className="form-label">Adresse</label>
+            <div className="mb-3 w-25">
+                <label htmlFor="address" className="form-label">Adresse</label>
                 <input 
                     type="text" 
                     className="form-control" 
@@ -95,17 +106,17 @@ const OrderForm = () => {
                     onChange={(e) => setAddress(e.target.value)} 
                     required 
                 />
-                </div>
+            </div>
 
             <h3>Produits disponibles</h3>
 
             {loading && <p>Chargement des produits...</p>}
-            {error && <p>{error}</p>}
-
+            {error && <p className="text-danger">{error}</p>} {/* Affichage d'erreur */}
+            
             {!loading && !error && (
                 <ul className="row list-unstyled">
                     {products.map((product) => (
-                        <li key={product.id} className="col-md-4 me-4 mb-2 p-2  w-25 border border-10 rounded">
+                        <li key={product.id} className="col-md-4 me-4 mb-2 p-2 w-25 border border-10 rounded">
                             <div className="flex justify-between items-center">
                                 <div>
                                     <p>{product.name} ({product.unit})</p>
@@ -115,14 +126,14 @@ const OrderForm = () => {
                                     <button 
                                         type="button" 
                                         onClick={() => handleAddProduct(product)} 
-                                        className=" btn btn-outline-danger mr-2 bg-danger bg-blue-500 text-white px-2 py-1 rounded"
+                                        className="btn btn-outline-danger mr-2 bg-danger text-white px-2 py-1 rounded"
                                     >
                                         +
                                     </button>
                                     <button 
                                         type="button" 
                                         onClick={() => handleRemoveProduct(product)} 
-                                        className=" btn btn-outline-danger bg-danger m-2 p-2 text-white px-2 py-1 rounded"
+                                        className="btn btn-outline-danger bg-danger m-2 p-2 text-white px-2 py-1 rounded"
                                     >
                                         -
                                     </button>
@@ -137,12 +148,12 @@ const OrderForm = () => {
             <ul>
                 {selectedProducts.map((product, index) => (
                     <li key={index}>
-                        {product.productName} - {product.quantity} {product.unit}
+                        {product.productName} - {product.quantity}
                     </li>
                 ))}
             </ul>
 
-            <button type="submit" className=" btn btn-primary bg-green-500 text-B px-4 py-2 mt-4 rounded">
+            <button type="submit" className="btn btn-primary bg-green-500 text-white px-4 py-2 mt-4 rounded">
                 Passer commande
             </button>
         </form>

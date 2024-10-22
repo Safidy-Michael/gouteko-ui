@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { placeOrder } from '../../api/orderApi';
-import axios from 'axios'; 
+import axios from 'axios';
 
 const OrderForm = () => {
     const [firstName, setFirstName] = useState('');
@@ -11,6 +11,12 @@ const OrderForm = () => {
     const [error, setError] = useState(null);
 
     useEffect(() => {
+        // Récupérer automatiquement les infos de l'utilisateur depuis localStorage
+        const storedFirstName = localStorage.getItem('firstName');
+        const storedAddress = localStorage.getItem('address');
+        if (storedFirstName) setFirstName(storedFirstName);
+        if (storedAddress) setAddress(storedAddress);
+
         const fetchProducts = async () => {
             setLoading(true);
             const token = localStorage.getItem('token');
@@ -70,7 +76,6 @@ const OrderForm = () => {
             setSelectedProducts([]);
 
             alert('Commande passée avec succès !'); 
-            
         
         } catch (error) {
             console.error('Erreur lors de la commande', error);
@@ -111,37 +116,47 @@ const OrderForm = () => {
             <h3>Produits disponibles</h3>
 
             {loading && <p>Chargement des produits...</p>}
-            {error && <p className="text-danger">{error}</p>} {/* Affichage d'erreur */}
+            {error && <p className="text-danger">{error}</p>}
             
             {!loading && !error && (
-                <ul className="row list-unstyled">
+                <div className="row">
                     {products.map((product) => (
-                        <li key={product.id} className="col-md-4 me-4 mb-2 p-2 w-25 border border-10 rounded">
-                            <div className="flex justify-between items-center">
-                                <div>
-                                    <p>{product.name} ({product.unit})</p>
-                                    <p>Prix : {product.price.toFixed(2)} ariary</p>
+                        <div key={product.id} className="col-md-3 mb-4">
+                            <div className="border border-2 rounded p-2 h-100">
+                                <div className="d-flex align-items-start">
+                                    {/* Image du produit */}
+                                    <img 
+                                        src={product.image || 'https://via.placeholder.com/150'}
+                                        alt={product.name}
+                                        className="w-50 h-auto object-cover object-center rounded mb-2"
+                                    />
+                                    {/* Nom et prix à droite de l'image */}
+                                    <div className="ms-3">
+                                        <p><strong>{product.name} ({product.unit})</strong></p>
+                                        <p>Prix : {product.price.toFixed(2)} ariary</p>
+                                    </div>
                                 </div>
-                                <div>
+                                {/* Boutons en bas de la carte produit */}
+                                <div className="d-flex mt-3">
                                     <button 
                                         type="button" 
                                         onClick={() => handleAddProduct(product)} 
-                                        className="btn btn-outline-danger mr-2 bg-danger text-white px-2 py-1 rounded"
+                                        className="btn btn-outline-danger me-2 bg-danger text-white px-2 py-1 rounded"
                                     >
                                         +
                                     </button>
                                     <button 
                                         type="button" 
                                         onClick={() => handleRemoveProduct(product)} 
-                                        className="btn btn-outline-danger bg-danger m-2 p-2 text-white px-2 py-1 rounded"
+                                        className="btn btn-outline-danger bg-danger text-white px-2 py-1 rounded"
                                     >
                                         -
                                     </button>
                                 </div>
                             </div>
-                        </li>
+                        </div>
                     ))}
-                </ul>
+                </div>
             )}
 
             <h3>Produits sélectionnés</h3>

@@ -40,7 +40,7 @@ const UserForm = ({ onSubmit, user }) => {
     };
 
     return (
-        <form onSubmit={handleSubmit} className="float-right">
+        <form onSubmit={handleSubmit} className="w-full md:w-1/2 p-4">
             <div className="mb-3">
                 <input
                     type="text"
@@ -48,7 +48,7 @@ const UserForm = ({ onSubmit, user }) => {
                     value={firstName}
                     onChange={(e) => setFirstName(e.target.value)}
                     required
-                    className="border p-2 mr-2"
+                    className="border p-2 mr-2 w-full"
                 />
             </div>
             <div className="mb-3">
@@ -58,7 +58,7 @@ const UserForm = ({ onSubmit, user }) => {
                     value={lastName}
                     onChange={(e) => setLastName(e.target.value)}
                     required
-                    className="border p-2 mr-2"
+                    className="border p-2 mr-2 w-full"
                 />
             </div>
             <div className="mb-3">
@@ -68,7 +68,7 @@ const UserForm = ({ onSubmit, user }) => {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
-                    className="border p-2 mr-2"
+                    className="border p-2 mr-2 w-full"
                 />
             </div>
             <div className="mb-3">
@@ -78,7 +78,7 @@ const UserForm = ({ onSubmit, user }) => {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required={!user} 
-                    className="border p-2 mr-2"
+                    className="border p-2 mr-2 w-full"
                 />
             </div>
             <div className="mb-3">
@@ -87,7 +87,7 @@ const UserForm = ({ onSubmit, user }) => {
                     placeholder="Address"
                     value={address}
                     onChange={(e) => setAddress(e.target.value)}
-                    className="border p-2 mr-2"
+                    className="border p-2 mr-2 w-full"
                 />
             </div>
             <div className="mb-3">
@@ -96,7 +96,7 @@ const UserForm = ({ onSubmit, user }) => {
                     placeholder="Phone Number"
                     value={phoneNumber}
                     onChange={(e) => setPhoneNumber(e.target.value)}
-                    className="border p-2 mr-2"
+                    className="border p-2 mr-2 w-full"
                 />
             </div>
             <div className="mb-3">
@@ -106,7 +106,7 @@ const UserForm = ({ onSubmit, user }) => {
                     required={!user}
                 />
             </div>
-            <button type="submit" className="btn btn-primary bg-green-500 text-B px-4 py-2 mt-4 rounded">
+            <button type="submit" className="btn btn-primary bg-green-500 text-white px-4 py-2 mt-4 rounded">
                 {user ? 'Update User' : 'Create User'}
             </button>
         </form>

@@ -39,7 +39,7 @@ const UserManagement = () => {
 
     const handleDeleteUser = async (id) => {
         try {
-            await deleteUser(id); // Supprimez l'utilisateur
+            await deleteUser(id);
             fetchUsers(); 
         } catch (error) {
             console.error('Error deleting user:', error);
@@ -47,11 +47,11 @@ const UserManagement = () => {
     };
 
     const handleEditUser = (user) => {
-        setEditingUser(user); // Définir l'utilisateur en cours d'édition
+        setEditingUser(user); 
     };
 
     const handleShowUser = (userId) => {
-        navigate(`/users/${userId}`); // Navigation vers la page de l'utilisateur
+        navigate(`/users/${userId}`);
     };
 
     return (

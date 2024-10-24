@@ -11,7 +11,7 @@ const ProductList = ({ products, onEdit, onDelete }) => {
                         <div key={product.id} className="group relative">
                             <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-lg bg-gray-200 xl:aspect-h-8 xl:aspect-w-7">
                                 <img
-                                    src={product.productImage || 'https://via.placeholder.com/150'} // Corriger ici
+                                    src={product.productImage || 'https://via.placeholder.com/150'}
                                     alt={product.name}
                                     className="h-full w-full object-cover object-center group-hover:opacity-75"
                                 />
@@ -19,7 +19,7 @@ const ProductList = ({ products, onEdit, onDelete }) => {
                             <div className="mt-4 flex justify-between">
                                 <div>
                                     <h3 className="text-sm text-gray-700">
-                                        <button className="group">
+                                        <button className="group" onClick={() => onEdit(product)}>
                                             <span aria-hidden="true" className="absolute inset-0"></span>
                                             {product.name}
                                         </button>

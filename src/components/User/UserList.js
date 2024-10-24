@@ -11,7 +11,7 @@ const UserList = ({ users, onEdit, onDelete, onShow }) => {
                                 alt={`${user.firstName} ${user.lastName}`}
                                 src={user.imageBase64 || 'https://via.placeholder.com/150'}
                                 className="relative inline-block h-12 w-12 !rounded-full object-cover object-center"
-                                onError={(e) => { e.target.src = 'https://via.placeholder.com/150'; }} // Image par défaut
+                                onError={(e) => { e.target.src = 'https://via.placeholder.com/150'; }} 
                             />
                         </div>
                         <div className="flex flex-col justify-between flex-grow">

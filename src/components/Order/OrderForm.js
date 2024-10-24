@@ -11,7 +11,6 @@ const OrderForm = () => {
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        // Récupérer automatiquement les infos de l'utilisateur depuis localStorage
         const storedFirstName = localStorage.getItem('firstName');
         const storedAddress = localStorage.getItem('address');
         if (storedFirstName) setFirstName(storedFirstName);
@@ -26,6 +25,7 @@ const OrderForm = () => {
                         'Authorization': `Bearer ${token}`,
                     },
                 });
+                console.log(response.data); // Vérifiez la structure des données ici
                 setProducts(response.data);
             } catch (error) {
                 setError('Erreur lors de la récupération des produits');
@@ -124,19 +124,18 @@ const OrderForm = () => {
                         <div key={product.id} className="col-md-3 mb-4">
                             <div className="border border-2 rounded p-2 h-100">
                                 <div className="d-flex align-items-start">
-                                    {/* Image du produit */}
+                        
                                     <img 
-                                        src={product.image || 'https://via.placeholder.com/150'}
-                                        alt={product.name}
+                                      src={product.productImage || 'https://via.placeholder.com/150'}
+                                       alt={product.name}
                                         className="w-50 h-auto object-cover object-center rounded mb-2"
                                     />
-                                    {/* Nom et prix à droite de l'image */}
                                     <div className="ms-3">
                                         <p><strong>{product.name} ({product.unit})</strong></p>
                                         <p>Prix : {product.price.toFixed(2)} ariary</p>
                                     </div>
                                 </div>
-                                {/* Boutons en bas de la carte produit */}
+                            
                                 <div className="d-flex mt-3">
                                     <button 
                                         type="button" 
@@ -173,6 +172,7 @@ const OrderForm = () => {
             </button>
         </form>
     );
+    
 };
 
 export default OrderForm;

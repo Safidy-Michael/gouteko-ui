@@ -158,7 +158,7 @@ const OrderForm = () => {
                 </div>
             )}
 
-            <h3>Produits sélectionnés</h3>
+            <h3 className='p-2'>Produits sélectionnés</h3>
             <ul>
                 {selectedProducts.map((product, index) => (
                     <li key={index}>
@@ -167,7 +167,7 @@ const OrderForm = () => {
                 ))}
             </ul>
 
-            <button type="submit" className="btn btn-primary bg-green-500 text-white px-4 py-2 mt-4 rounded">
+            <button type="submit" className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center me-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                 Passer commande
             </button>
         </form>

@@ -1,54 +1,95 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { FaEllipsisV, FaEdit, FaEye, FaTrash } from 'react-icons/fa';
 
 const UserList = ({ users, onEdit, onDelete, onShow }) => {
     return (
-        <div className=" flex w-96 flex-col rounded-lg border border-slate-200 bg-white shadow-sm absolute top-4 right-8">
-            <nav className="flex min-w-[240px] flex-col gap-1 p-1.5">
-                {users.map(user => (
-                    <div key={user.id} className="text-slate-800 flex w-full items-center rounded-md p-3 transition-all hover:bg-slate-100 focus:bg-slate-100 active:bg-slate-100 mb-4">
-                        <div className="mr-4 grid place-items-center">
-                            <img
-                                alt={`${user.firstName} ${user.lastName}`}
-                                src={user.imageBase64 || 'https://via.placeholder.com/150'}
-                                className="relative inline-block h-12 w-12 !rounded-full object-cover object-center"
-                                onError={(e) => { e.target.src = 'https://via.placeholder.com/150'; }} 
-                            />
-                        </div>
-                        <div className="flex flex-col justify-between flex-grow">
-                            <h6 className="text-slate-800 font-medium">
-                                {user.firstName} {user.lastName}
-                            </h6>
-                            <p className="text-slate-500 text-sm">
-                                {user.email}
-                            </p>
-                            <div className="mt-2 flex justify-end">
-                                <button
-                                    onClick={() => onEdit(user)}
-                                    className="btn btn-outline-danger bg-danger text-white px-2 me-2 py-1 rounded">
-                                    Edit
-                                </button>
-                                <button
-                                    onClick={() => {
-                                        if (user.id) { 
-                                            onShow(user.id); 
-                                        } else {
-                                            console.error("User ID is null or undefined");
-                                        }
-                                    }}
-                                    className="btn btn-outline-danger bg-danger text-white px-2 me-2 py-1 rounded">
-                                    Show
-                                </button>
-                                <button
-                                    onClick={() => onDelete(user.id)}
-                                    className="btn btn-outline-danger bg-danger text-white px-2 me-2 py-1 rounded">
-                                    Delete
-                                </button>
-                            </div>
-                        </div>
-                    </div>
+        <table className="min-w-full border-collapse">
+            <thead>
+                <tr>
+                    <th className="text-center border-b p-4">USER NAME</th>
+                    <th className="text-center border-b p-4">EMAIL</th>
+                    <th className="text-center border-b p-4">ROLE</th>
+                    <th className="text-center border-b p-4">IMAGE</th>
+                    <th className="text-center border-b p-4">ACTIONS</th>
+                </tr>
+            </thead>
+            <tbody>
+                {users.map((user) => (
+                    <UserRow 
+                        key={user.id} 
+                        user={user} 
+                        onEdit={onEdit} 
+                        onDelete={onDelete} 
+                        onShow={onShow} 
+                    />
                 ))}
-            </nav>
-        </div>
+            </tbody>
+        </table>
+    );
+};
+
+const UserRow = ({ user, onEdit, onDelete, onShow }) => {
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+    const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
+
+    return (
+        <tr>
+            <td className="text-center border-b p-4">{user.firstName} {user.lastName}</td>
+            <td className="text-center border-b p-4">{user.email}</td>
+            <td className="text-center border-b p-4">{user.role}</td>
+            <td className="text-center border-b p-4">
+                <img
+                    alt={`${user.firstName} ${user.lastName}`}
+                    src={user.imageBase64 || 'https://via.placeholder.com/150'}
+                    className="inline-block h-12 w-12 rounded-full object-cover"
+                    onError={(e) => { e.target.src = 'https://via.placeholder.com/150'; }} 
+                />
+            </td>
+            <td className="text-center border-b p-4 relative">
+                <button
+                    onClick={toggleMenu}
+                    className="bg-w text-black py-1 px-2 rounded focus:outline-none"
+                >
+                    <FaEllipsisV />
+                </button>
+                {isMenuOpen && (
+                    <div className="absolute right-0 mt-2 bg-white border rounded shadow-lg z-10">
+                        <button
+                            onClick={() => {
+                                onEdit(user);
+                                setIsMenuOpen(false);
+                            }}
+                            className="flex items-center p-2 hover:bg-gray-200 w-full text-left"
+                        >
+                            <FaEdit className="mr-1" /> Edit
+                        </button>
+                        <button
+                            onClick={() => {
+                                if (user.id) {
+                                    onShow(user.id); 
+                                    setIsMenuOpen(false);
+                                } else {
+                                    console.error("User ID is null or undefined");
+                                }
+                            }}
+                            className="flex items-center p-2 hover:bg-gray-200 w-full text-left"
+                        >
+                            <FaEye className="mr-1" /> Show
+                        </button>
+                        <button
+                            onClick={() => {
+                                onDelete(user.id);
+                                setIsMenuOpen(false);
+                            }}
+                            className="flex items-center p-2 hover:bg-gray-200 w-full text-left"
+                        >
+                            <FaTrash className="mr-1" /> Delete
+                        </button>
+                    </div>
+                )}
+            </td>
+        </tr>
     );
 };
 

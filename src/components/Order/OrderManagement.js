@@ -3,7 +3,8 @@ import { placeOrder, getOrders, updateOrder, deleteOrder } from '../../api/order
 import OrderForm from './OrderForm';
 import OrderList from './OrderList';
 import { useNavigate } from 'react-router-dom';
- 
+import Navbar from '../Navbar';
+
 const token = localStorage.getItem('token');
 const OrderManagement = () => {
     const [orders, setOrders] = useState([]);
@@ -67,7 +68,7 @@ const OrderManagement = () => {
 
     return (
         <div>
-            <h1 className="text-2xl mb-4">Gestion des Commandes</h1>
+            <Navbar/>
             <OrderForm 
                 onSubmit={currentOrder ? handleUpdateOrder : handleplaceOrder} 
                 order={currentOrder} 

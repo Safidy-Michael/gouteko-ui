@@ -23,9 +23,11 @@ function LoginPage() {
 
             console.log('Login successful:', response.data);
 
-            const { id, token } = response.data; 
+            const { id, token, imageBase64 } = response.data; // Récupération de `imageBase64`
 
             localStorage.setItem('token', token); 
+            localStorage.setItem('userId', id); 
+            localStorage.setItem('profileImage', imageBase64); // Stockage de l'image en Base64
 
             navigate(`/users/${id}`); 
         } catch (error) {

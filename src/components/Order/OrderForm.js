@@ -158,7 +158,7 @@ const OrderForm = () => {
                 </div>
             )}
 
-            <h3 className='p-2'>Produits sélectionnés</h3>
+            <h3 className='psu-2'>Produits sélectionnés</h3>
             <ul>
                 {selectedProducts.map((product, index) => (
                     <li key={index}>

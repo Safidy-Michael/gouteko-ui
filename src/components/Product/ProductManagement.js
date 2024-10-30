@@ -3,6 +3,7 @@ import { getProducts, createProduct, updateProduct, deleteProduct } from '../../
 import ProductForm from './ProductForm';  
 import ProductList from './ProductList';  
 import { MDBInput } from 'mdb-react-ui-kit';
+import Navbar from '../Navbar';
 
 const ProductManagement = () => {
     const [products, setProducts] = useState([]);
@@ -74,7 +75,7 @@ const ProductManagement = () => {
 
     return (
         <div className="p-4">
-            <h1 className="text-2xl mb-4 text-center">Product Management</h1>
+            <Navbar/>
             
             <div className="flex justify-between items-center mb-4">
                 <MDBInput

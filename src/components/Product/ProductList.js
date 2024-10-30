@@ -3,7 +3,7 @@ import { FaEllipsisV, FaEdit, FaTrash } from 'react-icons/fa';
 
 const ProductList = ({ products, onEdit, onDelete }) => {
     if (products.length === 0) {
-        return <p className="text-center">No products available.</p>; // Message si aucun produit n'est disponible
+        return <p className="text-center">No products available.</p>; 
     }
 
     return (

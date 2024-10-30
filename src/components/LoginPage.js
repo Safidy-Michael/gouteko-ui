@@ -21,19 +21,21 @@ function LoginPage() {
                 password,
             });
 
-            console.log('Login successful:', response.data);
-
-            const { id, token, imageBase64 } = response.data; // Récupération de `imageBase64`
+            const { id, token, imageBase64 } = response.data;
 
             localStorage.setItem('token', token); 
             localStorage.setItem('userId', id); 
-            localStorage.setItem('profileImage', imageBase64); // Stockage de l'image en Base64
+            localStorage.setItem('profileImage', imageBase64); 
 
             navigate(`/users/${id}`); 
         } catch (error) {
             console.error('Login failed:', error.response ? error.response.data : error.message);
             setError('Invalid email or password.'); 
         }
+    };
+
+    const navigateToSignup = () => {
+        navigate('/signup'); // Redirection vers la page d'inscription
     };
 
     return (
@@ -66,7 +68,7 @@ function LoginPage() {
                         Sign in
                     </button>
                     <div className="text-center">
-                        <p>Not a member? <a href="/signup">Register</a></p>
+                        <p>Not a member? <button onClick={navigateToSignup} className="btn-link">Sign Up</button></p>
                     </div>
                 </MDBContainer>
             </div>

@@ -106,7 +106,7 @@ const UserDetails = () => {
                                     <FaIdCard className="text-indigo-500" />
                                     <span className="font-semibold">CIN</span>
                                 </div>
-                                <p className="text-sm text-gray-600">{user.cinNumber}</p>
+                                <p className="text-sm text-gray-600">{user.cin}</p>
                             </div>
 
                             <div className="flex flex-col items-start">

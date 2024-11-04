@@ -1,33 +1,78 @@
 import React, { useState } from 'react';
-import { FaEllipsisV, FaEdit, FaTrash } from 'react-icons/fa';
+import { FaEllipsisV, FaEdit, FaTrash, FaFilter } from 'react-icons/fa';
 
 const ProductList = ({ products, onEdit, onDelete }) => {
-    if (products.length === 0) {
-        return <p className="text-center">No products available.</p>; 
-    }
+    const [filterCategory, setFilterCategory] = useState("");
+    const [isFilterVisible, setIsFilterVisible] = useState(false);
+
+    // Gestion du filtre
+    const filteredProducts = filterCategory
+        ? products.filter(product =>
+            product.category.toLowerCase().includes(filterCategory.toLowerCase())
+        )
+        : products;  // Affiche tous les produits si le champ de filtre est vide
+
+    // Fonction pour afficher/masquer le champ de filtre
+    const toggleFilterVisibility = () => {
+        setIsFilterVisible(!isFilterVisible);
+        setFilterCategory("");  // Réinitialise le champ de filtre
+    };
 
     return (
-        <table className="min-w-full border-collapse">
-            <thead>
-                <tr>
-                    <th className="text-center border-b p-4">PRODUCT NAME</th>
-                    <th className="text-center border-b p-4">CATEGORY</th>
-                    <th className="text-center border-b p-4">DESCRIPTION</th>
-                    <th className="text-center border-b p-4">PRICE</th>
-                    <th className="text-center border-b p-4">ACTIONS</th>
-                </tr>
-            </thead>
-            <tbody>
-                {products.map((product) => (
-                    <ProductRow 
-                        key={product.id} 
-                        product={product} 
-                        onEdit={onEdit} 
-                        onDelete={onDelete} 
-                    />
-                ))}
-            </tbody>
-        </table>
+        <div className="product-list-container">
+            <table className="min-w-full border-collapse">
+                <thead>
+                    <tr>
+                        <th className="text-center border-b p-4">PRODUCT NAME</th>
+                        <th className="text-center border-b p-4">
+                            CATEGORY
+                            <button 
+                                onClick={toggleFilterVisibility} 
+                                className="ml-2 text-blue-500 hover:text-blue-700"
+                            >
+                                <FaFilter />
+                            </button>
+                        </th>
+                        <th className="text-center border-b p-4">DESCRIPTION</th>
+                        <th className="text-center border-b p-4">PRICE</th>
+                        <th className="text-center border-b p-4">ACTIONS</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {/* Barre de recherche de catégorie */}
+                    {isFilterVisible && (
+                        <tr>
+                            <td colSpan="5" className="p-4">
+                                <div className="flex items-center">
+                                    <input
+                                        type="text"
+                                        placeholder="Filter by category"
+                                        value={filterCategory}
+                                        onChange={(e) => setFilterCategory(e.target.value)}
+                                        className="border p-2 rounded mr-2 flex-grow"
+                                    />
+                                </div>
+                            </td>
+                        </tr>
+                    )}
+                    {/* Affichage des produits */}
+                    {filteredProducts.length === 0 ? (
+                        <tr>
+                            <td colSpan="5" className="text-center p-4">No products available.</td>
+                        </tr>
+                    ) : (
+                        filteredProducts.map((product) => (
+                            <ProductRow 
+                                key={product.id} 
+                                product={product} 
+                                onEdit={onEdit} 
+                                onDelete={onDelete} 
+                            />
+                        ))
+                    )}
+                </tbody>
+            </table>
+        </div>
     );
 };
 

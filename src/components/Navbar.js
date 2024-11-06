@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { AiOutlineClose, AiOutlineMenu } from 'react-icons/ai';
-import { FaUsers, FaProductHunt, FaShoppingCart, FaInfoCircle, FaPhone, FaUserCircle } from 'react-icons/fa';
+import { FaUsers, FaProductHunt, FaShoppingCart, FaUserCircle } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 
 const Navbar = () => {
@@ -20,8 +20,6 @@ const Navbar = () => {
         { id: 1, text: 'Users', path: `/users`, icon: <FaUsers /> },
         { id: 2, text: 'Products', path: '/products', icon: <FaProductHunt /> },
         { id: 3, text: 'Orders', path: '/orders', icon: <FaShoppingCart /> },
-        { id: 4, text: 'About', path: '/about', icon: <FaInfoCircle /> },
-        { id: 5, text: 'Contact', path: '/contact', icon: <FaPhone /> },
         { id: 6, text: 'Profil', path: `/users/${userId}`, icon: <FaUserCircle /> },
     ];
 

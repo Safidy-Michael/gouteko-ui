@@ -54,7 +54,6 @@ const OrderList = ({ onShowDetails }) => {
 
     return (
         <div className="py-4">
-            <h2 className="py-4 text-center">Liste des Commandes</h2>
             <table className="min-w-full border-collapse">
                 <thead>
                     <tr>

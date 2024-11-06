@@ -5,17 +5,19 @@ const ProductList = ({ products, onEdit, onDelete }) => {
     const [filterCategory, setFilterCategory] = useState("");
     const [isFilterVisible, setIsFilterVisible] = useState(false);
 
-
     const filteredProducts = filterCategory
         ? products.filter(product =>
             product.category.toLowerCase().includes(filterCategory.toLowerCase())
         )
-        : products; 
+        : products;
 
-   
     const toggleFilterVisibility = () => {
         setIsFilterVisible(!isFilterVisible);
         setFilterCategory("");  
+    };
+
+    const resetFilter = () => {
+        setFilterCategory("");
     };
 
     return (
@@ -42,14 +44,20 @@ const ProductList = ({ products, onEdit, onDelete }) => {
                     {isFilterVisible && (
                         <tr>
                             <td colSpan="5" className="p-4">
-                                <div className="flex items-center">
+                                <div className="flex items-center space-x-2">
                                     <input
                                         type="text"
                                         placeholder="Filter by category"
                                         value={filterCategory}
                                         onChange={(e) => setFilterCategory(e.target.value)}
-                                        className="border p-2 rounded mr-2 flex-grow"
+                                        className="border w-20 p-2 rounded flex-grow"
                                     />
+                                    <button
+                                        onClick={resetFilter}
+                                        className="bg-gray-200 hover:bg-gray-300 text-gray-700 py-1 px-2 rounded"
+                                    >
+                                        Réinitialiser
+                                    </button>
                                 </div>
                             </td>
                         </tr>
@@ -93,7 +101,7 @@ const ProductRow = ({ product, onEdit, onDelete }) => {
             <td className="text-center border-b p-4 text-gray-500 relative">
                 <button
                     onClick={toggleMenu}
-                    className="bg-w text-black py-1 px-2 rounded focus:outline-none"
+                    className="bg-white text-black py-1 px-2 rounded focus:outline-none"
                 >
                     <FaEllipsisV />
                 </button>

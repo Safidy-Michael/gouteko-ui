@@ -5,17 +5,17 @@ const ProductList = ({ products, onEdit, onDelete }) => {
     const [filterCategory, setFilterCategory] = useState("");
     const [isFilterVisible, setIsFilterVisible] = useState(false);
 
-    // Gestion du filtre
+
     const filteredProducts = filterCategory
         ? products.filter(product =>
             product.category.toLowerCase().includes(filterCategory.toLowerCase())
         )
-        : products;  // Affiche tous les produits si le champ de filtre est vide
+        : products; 
 
-    // Fonction pour afficher/masquer le champ de filtre
+   
     const toggleFilterVisibility = () => {
         setIsFilterVisible(!isFilterVisible);
-        setFilterCategory("");  // Réinitialise le champ de filtre
+        setFilterCategory("");  
     };
 
     return (
@@ -39,7 +39,6 @@ const ProductList = ({ products, onEdit, onDelete }) => {
                     </tr>
                 </thead>
                 <tbody>
-                    {/* Barre de recherche de catégorie */}
                     {isFilterVisible && (
                         <tr>
                             <td colSpan="5" className="p-4">
@@ -55,7 +54,6 @@ const ProductList = ({ products, onEdit, onDelete }) => {
                             </td>
                         </tr>
                     )}
-                    {/* Affichage des produits */}
                     {filteredProducts.length === 0 ? (
                         <tr>
                             <td colSpan="5" className="text-center p-4">No products available.</td>

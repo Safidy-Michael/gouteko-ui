@@ -15,7 +15,7 @@ export const placeOrder = async (orderRequest) => {
     try {
         const response = await axios.post(`${API_URL}/place`, orderRequest, {
             headers: {
-                'Authorization': `Bearer ${getToken()}` // Appeler la fonction ici
+                'Authorization': `Bearer ${getToken()}`
             }
         });
         return response.data;

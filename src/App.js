@@ -1,24 +1,33 @@
-import React from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import UserManagement from './components/User/UserManagement'; // Nouveau composant
-import ProductManagement from './components/Product/ProductManagement'; // Nouveau composant
-import OrderManagement from './components/Order/OrderManagement'; // Nouveau composant
-import UserDetails from './components/User/UserDetails'; 
+    import React from 'react';
+    import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+    import LoginPage from './components/LoginPage';
+    import SignupPage from './components/SignUpPage';
+    import Dashboard from './components/Dashboard';
+    import UserManagement from './components/User/UserManagement'; 
+    import ProductManagement from './components/Product/ProductManagement'; 
+    import OrderManagement from './components/Order/OrderManagement'; 
+    import UserDetails from './components/User/UserDetails'; 
+    import OrderDetails from './components/Order/OrderDetails';
 
-const App = () => {
-    return (
-        <Router>
-            <div className="container mx-auto p-4">
-                <h1 className="text-2xl mb-4">Gestion des Ressources</h1>
-                <Routes>
-                    <Route path="/users" element={<UserManagement />} />
-                    <Route path="/products" element={<ProductManagement />} />
-                    <Route path="/orders" element={<OrderManagement />} />
-                    <Route path="/users/:id" element={<UserDetails />} />
-                </Routes>
-            </div>
-        </Router>
-    );
-};
+    import './index.css';
 
-export default App; 
+    const App = () => {
+        return (
+            <Router>
+                <div className="container mx-auto pt-24">
+                    <Routes>
+                        <Route path="/" element={<LoginPage />} />
+                        <Route path="/signup" element={<SignupPage />} />
+                        <Route path="/dashboard" element={<Dashboard />} />
+                            <Route path="/users" element={<UserManagement />} />
+                            <Route path="/products" element={<ProductManagement />} />
+                        <Route path="/orders" element={<OrderManagement />} />
+                        <Route path="/users/:id" element={<UserDetails />} />
+                        <Route path="/orders/:id" element={<OrderDetails />} />
+                    </Routes>
+                </div>
+            </Router>
+        );
+    };
+
+    export default App;

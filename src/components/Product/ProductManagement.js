@@ -2,11 +2,16 @@ import React, { useEffect, useState } from 'react';
 import { getProducts, createProduct, updateProduct, deleteProduct } from '../../api/productApi';
 import ProductForm from './ProductForm';  
 import ProductList from './ProductList';  
+import { MDBInput } from 'mdb-react-ui-kit';
+import Navbar from '../Navbar';
 
 const ProductManagement = () => {
     const [products, setProducts] = useState([]);
+    const [filteredProducts, setFilteredProducts] = useState([]);
     const [editingProduct, setEditingProduct] = useState(null);
-  
+    const [showForm, setShowForm] = useState(false);
+    const [searchTerm, setSearchTerm] = useState('');
+
     useEffect(() => {
         fetchProducts();
     }, []);
@@ -15,6 +20,7 @@ const ProductManagement = () => {
         try {
             const productsData = await getProducts();
             setProducts(productsData);
+            setFilteredProducts(productsData);
         } catch (error) {
             console.error('Error fetching products:', error);
         }
@@ -28,6 +34,7 @@ const ProductManagement = () => {
             } else {
                 await createProduct(product);
             }
+            setShowForm(false); 
             await fetchProducts(); 
         } catch (error) {
             console.error('Error creating/updating product:', error);
@@ -35,12 +42,12 @@ const ProductManagement = () => {
     };
 
     const handleEditProduct = (product) => {
-        setEditingProduct(product); 
+        setEditingProduct(product);
+        setShowForm(true);
     };
 
     const handleDeleteProduct = async (id) => {
         try {
-            console.log("Deleting product with ID:", id);
             await deleteProduct(id);
             await fetchProducts();
         } catch (error) {
@@ -48,12 +55,57 @@ const ProductManagement = () => {
             alert('Failed to delete the product. Please try again.'); 
         }
     };
-    
+
+    const handleAddNewProduct = () => {
+        setEditingProduct(null);
+        setShowForm(true);
+    };
+
+    const handleSearch = (e) => {
+        const searchValue = e.target.value.toLowerCase();
+        setSearchTerm(searchValue);
+        setFilteredProducts(
+            products.filter(product => 
+                product.name.toLowerCase().includes(searchValue) ||
+                product.category.toLowerCase().includes(searchValue) ||
+                product.description.toLowerCase().includes(searchValue)
+            )
+        );
+    };
+
     return (
-        <div>
-            <h1 className="text-2xl mb-4">Product Management</h1>
-            <ProductForm onSubmit={handleCreateOrUpdateProduct} product={editingProduct} />
-            <ProductList products={products} onEdit={handleEditProduct} onDelete={handleDeleteProduct} />
+        <div className="p-4">
+            <Navbar/>
+            
+            <div className="flex justify-between items-center mb-4">
+                <MDBInput
+                    type="text"
+                    placeholder="Search Products"
+                    value={searchTerm}
+                    onChange={handleSearch}
+                    className="border p-2"
+                />
+                <button 
+                    onClick={handleAddNewProduct}
+                    className="w-25 text-white bg-blue-600 hover:bg-blue-700 font-medium rounded-lg text-sm px-5 py-2.5 transition duration-200"
+                >
+                   + Add Product
+                </button>
+            </div>
+
+            {showForm ? (
+                <ProductForm 
+                    onSubmit={handleCreateOrUpdateProduct} 
+                    product={editingProduct} 
+                    onClose={() => setShowForm(false)} 
+                />
+            ) : (
+                <ProductList 
+                    products={filteredProducts}
+                    onEdit={handleEditProduct}
+                    onDelete={handleDeleteProduct}
+                />
+            )}
         </div>
     );
 };

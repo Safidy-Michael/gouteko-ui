@@ -26,7 +26,7 @@ export const getProducts = async (page = 0, size=10) => {
         
         return response.data.content || []; 
     } catch (error) {
-        console.error('Error fetching users:', error);
+        console.error('Error fetching products:', error);
         throw error;
     }
 };

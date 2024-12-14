@@ -26,19 +26,29 @@ export const placeOrder = async (orderRequest) => {
 };
 
 
-export const getOrders = async () => {
+export const getOrders = async (page = 0, size = 10) => {
     const token = getToken();
+
+    if (!token) {
+        console.error('Token not found');
+        return;
+    }
 
     try {
         const response = await axios.get(API_URL, {
             headers: {
                 'Authorization': `Bearer ${token}`,
+            },
+            params: {
+                page,  
+                size,  
             }
         });
-        return response.data;
+        
+        return response.data.content || []; 
     } catch (error) {
-        console.error('Erreur lors de la récupération des commandes:', error.response ? error.response.data : error.message);
-        throw new Error('Erreur lors de la récupération des commandes.');
+        console.error('Error fetching users:', error);
+        throw error;
     }
 };
 

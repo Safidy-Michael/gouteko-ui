@@ -6,14 +6,29 @@ const getToken = () => {
     return localStorage.getItem('token');
 }
 
-export const getProducts = async () => {
+export const getProducts = async (page = 0, size=10) => {
     const token = getToken(); 
-    const response = await axios.get(`${API_URL}/`, {
-        headers: {
-            'Authorization': `Bearer ${token}` 
-        }
-    });
-    return response.data;
+    if (!token) {
+        console.error('Token not found');
+        return;
+    }
+
+    try {
+        const response = await axios.get(`${API_URL}/`, {
+            headers: {
+                'Authorization': `Bearer ${token}`,
+            },
+            params: {
+                page,  
+                size,  
+            }
+        });
+        
+        return response.data.content || []; 
+    } catch (error) {
+        console.error('Error fetching users:', error);
+        throw error;
+    }
 };
 
     export const createProduct = async (product) => {

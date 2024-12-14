@@ -101,7 +101,7 @@ const ProductRow = ({ product, onEdit, onDelete }) => {
             <td className="text-center border-b p-4 text-gray-500 relative">
                 <button
                     onClick={toggleMenu}
-                    className="bg-white text-black py-1 px-2 rounded focus:outline-none"
+                    className="bg-transparent text-black py-1 px-2 rounded focus:outline-none"
                 >
                     <FaEllipsisV />
                 </button>

@@ -32,7 +32,7 @@ export const getOrders = async (page = 0, size = 10) => {
     if (!token) {
         console.error('Token not found');
         return;
-    }
+    }   
 
     try {
         const response = await axios.get(API_URL, {

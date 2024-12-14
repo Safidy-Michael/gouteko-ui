@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { placeOrder } from '../../api/orderApi'; // Assurez-vous que ce chemin est correct
+import { placeOrder } from '../../api/orderApi';
 import axios from 'axios';
 
 
-const OrderForm = ({ onClose }) => { // Ajoutez onClose comme prop
+const OrderForm = ({ onClose }) => {
    const [firstName, setFirstName] = useState('');
    const [address, setAddress] = useState('');
    const [products, setProducts] = useState([]);
    const [selectedProducts, setSelectedProducts] = useState([]);
    const [loading, setLoading] = useState(true);
    const [error, setError] = useState(null);
-   const [isOpen, setIsOpen] = useState(true); // État pour gérer la visibilité
+   const [isOpen, setIsOpen] = useState(true); 
 
 
    useEffect(() => {
@@ -20,17 +20,21 @@ const OrderForm = ({ onClose }) => { // Ajoutez onClose comme prop
        if (storedAddress) setAddress(storedAddress);
 
 
-       const fetchProducts = async () => {
+       const fetchProducts = async (page = 0, size = 10) => {
            setLoading(true);
            const token = localStorage.getItem('token');
            try {
                const response = await axios.get('http://localhost:8080/product/', {
                    headers: {
                        'Authorization': `Bearer ${token}`,
-                   },
-               });
+                   }, 
+                    params: {
+                    page,  
+                    size,  
+                }
+            });
                console.log(response.data);
-               setProducts(response.data);
+               setProducts(response.data.content || []);
            } catch (error) {
                setError('Erreur lors de la récupération des produits');
            } finally {
@@ -39,7 +43,7 @@ const OrderForm = ({ onClose }) => { // Ajoutez onClose comme prop
        };
 
 
-       fetchProducts();
+       fetchProducts(0, 10);
    }, []);
 
 
@@ -84,7 +88,7 @@ const OrderForm = ({ onClose }) => { // Ajoutez onClose comme prop
            setFirstName('');
            setAddress('');
            setSelectedProducts([]);
-           setIsOpen(false); // Ferme le formulaire après soumission
+           setIsOpen(false); 
 
 
            alert('Commande passée avec succès !');
@@ -99,7 +103,7 @@ const OrderForm = ({ onClose }) => { // Ajoutez onClose comme prop
 
    const handleClose = () => {
        setIsOpen(false);
-       onClose(); // Appel de la fonction onClose passée en prop
+       onClose();
    };
 
 

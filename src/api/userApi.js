@@ -3,13 +3,28 @@ import axios from 'axios';
 const API_URL = 'http://localhost:8080/user'; 
 const token = localStorage.getItem('token');
 
-export const getUsers = async () => {
-    const response = await axios.get(`${API_URL}/`,{
-        headers: {
-            'Authorization': `Bearer ${token}` 
-        }
-    });
-    return response.data;
+export const getUsers = async (page = 0, size = 10) => {
+    if (!token) {
+        console.error('Token not found');
+        return;
+    }
+
+    try {
+        const response = await axios.get(`${API_URL}/`, {
+            headers: {
+                'Authorization': `Bearer ${token}`,
+            },
+            params: {
+                page,  
+                size,  
+            }
+        });
+        
+        return response.data.content || []; 
+    } catch (error) {
+        console.error('Error fetching users:', error);
+        throw error;
+    }
 };
 
 export const createUser = async (formData) => {

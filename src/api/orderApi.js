@@ -25,32 +25,79 @@ export const placeOrder = async (orderRequest) => {
     }
 };
 
-
-export const getOrders = async (page = 0, size = 10) => {
-    const token = getToken();
+export const getPaginationArg = async (page = 1, size = 10, sortField = 'id', direction = 'ASC') => {
+    const token = getToken(); 
 
     if (!token) {
         console.error('Token not found');
-        return;
-    }   
+        return { content: [], totalPages: 0, totalElements: 0, size: 10, page: 1, empty: true }; // Valeurs par défaut si pas de token
+    }
 
     try {
+        const params = {
+            page,
+            size,
+            sortField,
+            direction,
+        };
+
         const response = await axios.get(API_URL, {
             headers: {
                 'Authorization': `Bearer ${token}`,
             },
-            params: {
-                page,  
-                size,  
-            }
+            params, 
         });
-        
-        return response.data.content || []; 
+
+        const data = response.data;
+
+        // Retourne les données paginées avec les champs supplémentaires
+        return {
+            content: data.content || [],
+            totalPages: data.totalPages || 0,
+            totalElements: data.totalElements || 0,
+            size: data.size || 10,
+            page: data.page || 1,
+            empty: data.empty || false,
+        };
     } catch (error) {
-        console.error('Error fetching users:', error);
-        throw error;
+        console.error('Error fetching orders:', error);
+        throw error; 
     }
 };
+
+
+export const getOrders = async (page = 1, size = 10, sortField = 'id', direction = 'ASC') => {
+    const token = getToken(); 
+
+    if (!token) {
+        console.error('Token not found');
+        return [];
+    }
+
+    try {
+        
+        const params = {
+            page,
+            size,
+            sortField,
+            direction,
+        };
+
+        
+        const response = await axios.get(API_URL, {
+            headers: {
+                'Authorization': `Bearer ${token}`,
+            },
+            params, 
+        });
+
+        return response.data.content || []; 
+    } catch (error) {
+        console.error('Error fetching orders:', error);
+        throw error; 
+    }
+};
+
 
 export const updateOrder = async (id, orderRequest) => {
     const token = getToken();

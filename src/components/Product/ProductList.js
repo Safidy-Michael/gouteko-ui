@@ -1,15 +1,37 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FaEllipsisV, FaEdit, FaTrash, FaFilter } from 'react-icons/fa';
+import { getProducts } from '../../api/productApi';
+import Pagination from '../Pagination';
 
-const ProductList = ({ products, onEdit, onDelete }) => {
+const ProductList = ({ onEdit, onDelete }) => {
+    const [products, setProducts] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
     const [filterCategory, setFilterCategory] = useState("");
     const [isFilterVisible, setIsFilterVisible] = useState(false);
+    const [currentPage, setCurrentPage] = useState(0);
+    const [pageSize] = useState(10);
+    const [totalItems, setTotalItems] = useState(0);
+    const [totalPages, setTotalPages] = useState(0);
 
-    const filteredProducts = filterCategory
-        ? products.filter(product =>
-            product.category.toLowerCase().includes(filterCategory.toLowerCase())
-        )
-        : products;
+    useEffect(() => {
+        const fetchProducts = async () => {
+            setLoading(true);
+            try {
+                const { content, totalElements, totalPages } = await getProducts(currentPage, pageSize);
+                setProducts(content);
+                setTotalItems(totalElements);
+                setTotalPages(totalPages);
+            } catch (error) {
+                console.error('Erreur lors de la récupération des produits:', error);
+                setError('Erreur lors de la récupération des produits.');
+            } finally {
+                setLoading(false);
+            }
+        };
+        
+        fetchProducts();
+    }, [currentPage, pageSize]);
 
     const toggleFilterVisibility = () => {
         setIsFilterVisible(!isFilterVisible);
@@ -18,66 +40,62 @@ const ProductList = ({ products, onEdit, onDelete }) => {
 
     const resetFilter = () => {
         setFilterCategory("");
+        setCurrentPage(0);
     };
 
+    if (loading) return <p>Chargement...</p>;
+    if (error) return <p>{error}</p>;
+
     return (
-        <div className="product-list-container">
+        <div className="py-4">
             <table className="min-w-full border-collapse">
                 <thead>
                     <tr>
                         <th className="text-center border-b p-4">PRODUCT NAME</th>
                         <th className="text-center border-b p-4">
                             CATEGORY
-                            <button 
-                                onClick={toggleFilterVisibility} 
-                                className="ml-2 text-blue-500 hover:text-blue-700"
-                            >
+                            <button onClick={toggleFilterVisibility} className="ml-2 text-blue-500 hover:text-blue-700">
                                 <FaFilter />
                             </button>
                         </th>
-                        <th className="text-center border-b p-4">DESCRIPTION</th>
+                        <th className="text-center border-b p-4">AVAILABLE QUANTITY</th>
                         <th className="text-center border-b p-4">PRICE</th>
                         <th className="text-center border-b p-4">ACTIONS</th>
                     </tr>
-                </thead>
-                <tbody>
                     {isFilterVisible && (
                         <tr>
-                            <td colSpan="5" className="p-4">
-                                <div className="flex items-center space-x-2">
+                            <th colSpan="5" className="p-4 text-center">
+                                <div className="flex justify-center mb-4">
                                     <input
                                         type="text"
                                         placeholder="Filter by category"
                                         value={filterCategory}
                                         onChange={(e) => setFilterCategory(e.target.value)}
-                                        className="border w-20 p-2 rounded flex-grow"
+                                        className="border p-2 rounded mr-2"
                                     />
-                                    <button
-                                        onClick={resetFilter}
-                                        className="bg-gray-200 hover:bg-gray-300 text-gray-700 py-1 px-2 rounded"
-                                    >
+                                    <button onClick={resetFilter} className="bg-gray-500 text-white px-4 py-2 rounded">
                                         Réinitialiser
                                     </button>
                                 </div>
-                            </td>
+                            </th>
                         </tr>
                     )}
-                    {filteredProducts.length === 0 ? (
-                        <tr>
-                            <td colSpan="5" className="text-center p-4">No products available.</td>
-                        </tr>
-                    ) : (
-                        filteredProducts.map((product) => (
-                            <ProductRow 
-                                key={product.id} 
-                                product={product} 
-                                onEdit={onEdit} 
-                                onDelete={onDelete} 
-                            />
-                        ))
-                    )}
+                </thead>
+                <tbody>
+                    {products.map((product) => (
+                        <ProductRow key={product.id} product={product} onEdit={onEdit} onDelete={onDelete} />
+                    ))}
                 </tbody>
             </table>
+            <div className="flex justify-center mt-4">
+                <Pagination
+                    currentPage={currentPage}
+                    totalPages={totalPages}
+                    totalItems={totalItems}
+                    pageSize={pageSize}
+                    onPageChange={setCurrentPage}
+                />
+            </div>
         </div>
     );
 };
@@ -90,39 +108,19 @@ const ProductRow = ({ product, onEdit, onDelete }) => {
     return (
         <tr>
             <td className="text-center border-b p-4">{product.name}</td>
-            <td className="text-center border-b p-4 text-gray-500">{product.category}</td>
-            <td className="text-center border-b p-4 text-gray-500">{product.description}</td>
-            <td className="text-center border-b p-4 text-gray-500">
-                {Intl.NumberFormat('fr-MG', {
-                    style: 'currency',
-                    currency: 'MGA',
-                }).format(product.price)}
-            </td>
-            <td className="text-center border-b p-4 text-gray-500 relative">
-                <button
-                    onClick={toggleMenu}
-                    className="bg-transparent text-black py-1 px-2 rounded focus:outline-none"
-                >
+            <td className="text-center border-b p-4">{product.category}</td>
+            <td className="text-center border-b p-4">{product.availableQuantity}</td>
+            <td className="text-center border-b p-4">{product.price} ar</td>
+            <td className="text-center border-b p-4 relative">
+                <button onClick={toggleMenu} className="bg-transparent text-black py-1 px-2 rounded focus:outline-none">
                     <FaEllipsisV />
                 </button>
                 {isMenuOpen && (
                     <div className="absolute right-0 mt-2 bg-white border rounded shadow-lg z-10">
-                        <button
-                            onClick={() => {
-                                onEdit(product);
-                                setIsMenuOpen(false);
-                            }}
-                            className="flex items-center p-2 hover:bg-gray-200 w-full text-left"
-                        >
+                        <button onClick={() => onEdit(product.id)} className="flex items-center p-2 hover:bg-gray-200 w-full text-left">
                             <FaEdit className="mr-1" /> Edit
                         </button>
-                        <button
-                            onClick={() => {
-                                onDelete(product.id);
-                                setIsMenuOpen(false);
-                            }}
-                            className="flex items-center p-2 hover:bg-gray-200 w-full text-left"
-                        >
+                        <button onClick={() => onDelete(product.id)} className="flex items-center p-2 hover:bg-gray-200 w-full text-left">
                             <FaTrash className="mr-1" /> Delete
                         </button>
                     </div>

@@ -1,30 +1,50 @@
 import React, { useState } from 'react';
 import { FaEllipsisV, FaEdit, FaEye, FaTrash } from 'react-icons/fa';
+import Pagination from '../Pagination'; // Importer votre composant de pagination
 
 const UserList = ({ users, onEdit, onDelete, onShow }) => {
+    const [currentPage, setCurrentPage] = useState(0);
+    const [pageSize] = useState(10); // Nombre d'éléments par page
+
+    // Calculer les utilisateurs à afficher en fonction de la page actuelle
+    const startIndex = currentPage * pageSize;
+    const paginatedUsers = users.slice(startIndex, startIndex + pageSize);
+
     return (
-        <table className="min-w-full border-collapse">
-            <thead>
-                <tr>
-                    <th className="text-center border-b p-4">USER NAME</th>
-                    <th className="text-center border-b p-4">EMAIL</th>
-                    <th className="text-center border-b p-4">ROLE</th>
-                    <th className="text-center border-b p-4">IMAGE</th>
-                    <th className="text-center border-b p-4">ACTIONS</th>
-                </tr>
-            </thead>
-            <tbody>
-                {users.map((user) => (
-                    <UserRow 
-                        key={user.id} 
-                        user={user} 
-                        onEdit={onEdit} 
-                        onDelete={onDelete} 
-                        onShow={onShow} 
-                    />
-                ))}
-            </tbody>
-        </table>
+        <div>
+            <table className="min-w-full border-collapse">
+                <thead>
+                    <tr>
+                        <th className="text-center border-b p-4">USER NAME</th>
+                        <th className="text-center border-b p-4">EMAIL</th>
+                        <th className="text-center border-b p-4">ROLE</th>
+                        <th className="text-center border-b p-4">IMAGE</th>
+                        <th className="text-center border-b p-4">ACTIONS</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {paginatedUsers.map((user) => (
+                        <UserRow 
+                            key={user.id} 
+                            user={user} 
+                            onEdit={onEdit} 
+                            onDelete={onDelete} 
+                            onShow={onShow} 
+                        />
+                    ))}
+                </tbody>
+            </table>
+
+            {/* Pagination en bas de la page */}
+            <div className="flex justify-center mt-4">
+                <Pagination
+                    currentPage={currentPage}
+                    totalItems={users.length}
+                    pageSize={pageSize}
+                    onPageChange={setCurrentPage}
+                />
+            </div>
+        </div>
     );
 };
 

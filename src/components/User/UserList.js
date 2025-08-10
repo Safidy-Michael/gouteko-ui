@@ -1,17 +1,43 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import Pagination from '../Pagination';
 import { FaEllipsisV, FaEdit, FaEye, FaTrash } from 'react-icons/fa';
-import Pagination from '../Pagination'; // Importer votre composant de pagination
+import { getUsers } from '../../api/userApi';  
 
-const UserList = ({ users, onEdit, onDelete, onShow }) => {
+const UserList = ({ onEdit, onDelete, onShow }) => {
+    const [users, setUsers] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+
     const [currentPage, setCurrentPage] = useState(0);
-    const [pageSize] = useState(10); // Nombre d'éléments par page
+    const [pageSize] = useState(10);
+    const [totalItems, setTotalItems] = useState(0);
+    const [totalPages, setTotalPages] = useState(0);
 
-    // Calculer les utilisateurs à afficher en fonction de la page actuelle
-    const startIndex = currentPage * pageSize;
-    const paginatedUsers = users.slice(startIndex, startIndex + pageSize);
+    useEffect(() => {
+        const fetchUsers = async () => {
+            setLoading(true);
+            setError(null);
+            try {
+                
+                const { content, totalElements, totalPages } = await getUsers(currentPage, pageSize);
+                setUsers(content);
+                setTotalItems(totalElements);
+                setTotalPages(totalPages);
+            } catch (err) {
+                setError("Erreur lors de la récupération des utilisateurs.");
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchUsers();
+    }, [currentPage, pageSize]);
+
+    if (loading) return <p>Chargement...</p>;
+    if (error) return <p>{error}</p>;
 
     return (
-        <div>
+        <div className="py-4">
             <table className="min-w-full border-collapse">
                 <thead>
                     <tr>
@@ -23,7 +49,7 @@ const UserList = ({ users, onEdit, onDelete, onShow }) => {
                     </tr>
                 </thead>
                 <tbody>
-                    {paginatedUsers.map((user) => (
+                    {users.map(user => (
                         <UserRow 
                             key={user.id} 
                             user={user} 
@@ -35,11 +61,11 @@ const UserList = ({ users, onEdit, onDelete, onShow }) => {
                 </tbody>
             </table>
 
-            {/* Pagination en bas de la page */}
             <div className="flex justify-center mt-4">
                 <Pagination
                     currentPage={currentPage}
-                    totalItems={users.length}
+                    totalItems={totalItems}
+                    totalPages={totalPages}
                     pageSize={pageSize}
                     onPageChange={setCurrentPage}
                 />
@@ -63,13 +89,13 @@ const UserRow = ({ user, onEdit, onDelete, onShow }) => {
                     alt={`${user.firstName} ${user.lastName}`}
                     src={user.imageBase64 || 'https://via.placeholder.com/150'}
                     className="inline-block h-12 w-12 rounded-full object-cover"
-                    onError={(e) => { e.target.src = 'https://via.placeholder.com/150'; }} 
+                    onError={(e) => { e.target.src = 'https://via.placeholder.com/150'; }}
                 />
             </td>
             <td className="text-center border-b p-4 relative">
                 <button
                     onClick={toggleMenu}
-                    className="bg-w text-black py-1 px-2 rounded focus:outline-none"
+                    className="bg-transparent text-black py-1 px-2 rounded focus:outline-none"
                 >
                     <FaEllipsisV />
                 </button>
@@ -87,7 +113,7 @@ const UserRow = ({ user, onEdit, onDelete, onShow }) => {
                         <button
                             onClick={() => {
                                 if (user.id) {
-                                    onShow(user.id); 
+                                    onShow(user.id);
                                     setIsMenuOpen(false);
                                 } else {
                                     console.error("User ID is null or undefined");

@@ -164,7 +164,7 @@ const OrderForm = ({ onClose }) => {
                                    >
                                        <div className="flex items-center space-x-4">
                                            <img
-                                               src={product.productImage}
+                                                src={product.imageBase64}
                                                alt={product.name}
                                                className="w-16 h-16 object-cover rounded-lg"
                                            />

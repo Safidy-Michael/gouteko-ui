@@ -4,60 +4,85 @@ import { FaUsers, FaProductHunt, FaShoppingCart, FaUserCircle } from 'react-icon
 import { Link } from 'react-router-dom';
 
 const Navbar = () => {
-    const [nav, setNav] = useState(false);
-    const handleNav = () => {
-        setNav(!nav);
-    };
+  const [navOpen, setNavOpen] = useState(false);
+  const toggleNav = () => setNavOpen(!navOpen);
 
-    const [userId, setUserId] = useState(null);
+  const [userId, setUserId] = useState(null);
 
-    useEffect(() => {
-        const id = localStorage.getItem('userId');  
-        setUserId(id);
-    }, []);
+  useEffect(() => {
+    const id = localStorage.getItem('userId');
+    setUserId(id);
+  }, []);
 
-    const navItems = [
-        { id: 1, text: 'Users', path: `/users`, icon: <FaUsers /> },
-        { id: 2, text: 'Products', path: '/products', icon: <FaProductHunt /> },
-        { id: 3, text: 'Orders', path: '/orders', icon: <FaShoppingCart /> },
-        { id: 6, text: 'Profil', path: `/users/${userId}`, icon: <FaUserCircle /> },
-    ];
+  const navItems = [
+    { id: 1, text: 'Users', path: `/users`, icon: <FaUsers /> },
+    { id: 2, text: 'Products', path: '/products', icon: <FaProductHunt /> },
+    { id: 3, text: 'Orders', path: '/orders', icon: <FaShoppingCart /> },
+    { id: 4, text: 'Profile', path: `/users/${userId}`, icon: <FaUserCircle /> },
+  ];
 
-    return (
-        <div className='bg-black flex justify-between items-center h-24 mx-auto px-4 text-white fixed top-0 left-0 w-full'>
-            <h1 className='w-full text-3xl font-bold text-w'>Gouteko</h1>
-            <ul className='hidden md:flex'>
-                {navItems.map(item => (
-                    <li
-                        key={item.id}
-                        className='p-4 hover:bg-blue-700 rounded-xl m-2 cursor-pointer duration-300 hover:text-black flex items-center'
-                    >
-                        <Link to={item.path} className="flex items-center">
-                            {item.icon}
-                            <span className="ml-2">{item.text}</span>
-                        </Link>
-                    </li>
-                ))}
-            </ul>
-            <div onClick={handleNav} className='block md:hidden'>
-                {nav ? <AiOutlineClose size={20} /> : <AiOutlineMenu size={20} />}
-            </div>
-            <ul className={nav ? 'fixed md:hidden left-0 top-0 w-[60%] h-full border-r border-r-gray-900 bg-[#000300] ease-in-out duration-500' : 'ease-in-out w-[60%] duration-500 fixed top-0 bottom-0 left-[-100%]'}>
-                <h1 className='w-full text-3xl font-bold text-[#00df9a] m-4'>REACT.</h1>
-                {navItems.map(item => (
-                    <li
-                        key={item.id}
-                        className='p-4 border-b rounded-xl hover:bg-[#00df9a] duration-300 hover:text-black cursor-pointer border-gray-600 flex items-center'
-                    >
-                        <Link to={item.path} className="flex items-center">
-                            {item.icon}
-                            <span className="ml-2">{item.text}</span>
-                        </Link>
-                    </li>
-                ))}
-            </ul>
-        </div>
-    );
+  return (
+    <nav className="bg-black fixed top-0 left-0 w-full h-24 flex items-center justify-between px-6 text-white z-50 shadow-md">
+      <h1 className="text-3xl font-bold text-[#00df9a] cursor-default select-none">Gouteko</h1>
+
+      <ul className="hidden md:flex space-x-6">
+        {navItems.map(({ id, text, path, icon }) => (
+          <li key={id}>
+            <Link
+              to={path}
+              className="flex items-center gap-2 px-4 py-2 rounded-lg hover:bg-[#00df9a] hover:text-black transition duration-300"
+              aria-label={text}
+            >
+              {icon}
+              <span>{text}</span>
+            </Link>
+          </li>
+        ))}
+      </ul>
+
+      
+      <button
+        onClick={toggleNav}
+        className="md:hidden p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-[#00df9a]"
+        aria-label={navOpen ? "Close menu" : "Open menu"}
+        aria-expanded={navOpen}
+      >
+        {navOpen ? <AiOutlineClose size={24} /> : <AiOutlineMenu size={24} />}
+      </button>
+
+      
+      <div
+        className={`fixed top-0 left-0 h-full w-3/5 max-w-xs bg-black border-r border-gray-800 shadow-lg transform transition-transform duration-300 ease-in-out z-40
+          ${navOpen ? 'translate-x-0' : '-translate-x-full'}`}
+      >
+        <h2 className="text-[#00df9a] text-4xl font-bold m-6 select-none">Gouteko</h2>
+        <ul className="flex flex-col space-y-4 px-6">
+          {navItems.map(({ id, text, path, icon }) => (
+            <li key={id}>
+              <Link
+                to={path}
+                onClick={() => setNavOpen(false)} 
+                className="flex items-center gap-3 text-white text-lg rounded-md p-3 hover:bg-[#00df9a] hover:text-black transition duration-300"
+                aria-label={text}
+              >
+                {icon}
+                <span>{text}</span>
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      
+      {navOpen && (
+        <div
+          onClick={toggleNav}
+          className="fixed inset-0 bg-black bg-opacity-50 z-30 md:hidden"
+          aria-hidden="true"
+        />
+      )}
+    </nav>
+  );
 };
 
 export default Navbar;

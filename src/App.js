@@ -19,8 +19,8 @@
                         <Route path="/" element={<LoginPage />} />
                         <Route path="/signup" element={<SignupPage />} />
                         <Route path="/dashboard" element={<Dashboard />} />
-                            <Route path="/users" element={<UserManagement />} />
-                            <Route path="/products" element={<ProductManagement />} />
+                        <Route path="/users" element={<UserManagement />} />
+                        <Route path="/products" element={<ProductManagement />} />
                         <Route path="/orders" element={<OrderManagement />} />
                         <Route path="/users/:id" element={<UserDetails />} />
                         <Route path="/orders/:id" element={<OrderDetails />} />

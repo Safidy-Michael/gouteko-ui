@@ -12,6 +12,7 @@
     "bootstrap": "^5.3.3",
     "cra-template": "1.2.0",
     "font-awesome": "^4.7.0",
+    "lucide-react": "^0.503.0",
     "mdb-react-ui-kit": "^9.0.0",
     "node-sass": "^7.0.3",
     "react": "^18.3.1",

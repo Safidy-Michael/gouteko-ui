@@ -6,15 +6,41 @@ const getToken = () => {
     return localStorage.getItem('token');
 }
 
-export const getProducts = async () => {
-    const token = getToken(); 
-    const response = await axios.get(`${API_URL}/`, {
-        headers: {
-            'Authorization': `Bearer ${token}` 
-        }
-    });
-    return response.data;
+export const getProducts = async (
+    page = 0, 
+    size = 10,
+    sortField = 'id',
+    direction = 'ASC'
+) => {
+    const token = getToken();
+
+    if (!token) {
+        console.error('Token not found');
+        return { content: [], totalPages: 0, totalElements: 0, size, page, empty: true };
+    }
+
+    try {
+        const response = await axios.get(`${API_URL}/`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+            params: { page, size, sortField, direction },
+        });
+
+        return response.data || {
+            content: [],
+            totalPages: 0,
+            totalElements: 0,
+            size,
+            page,
+            empty: true,
+        };
+    } catch (error) {
+        console.error('Error fetching products:', error.response?.data || error.message);
+        return { content: [], totalPages: 0, totalElements: 0, size, page, empty: true };
+    }
 };
+
 
     export const createProduct = async (product) => {
     try {

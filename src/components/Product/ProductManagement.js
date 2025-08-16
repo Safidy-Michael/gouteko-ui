@@ -7,7 +7,6 @@ import Navbar from '../Navbar';
 
 const ProductManagement = () => {
     const [products, setProducts] = useState([]);
-    const [filteredProducts, setFilteredProducts] = useState([]);
     const [editingProduct, setEditingProduct] = useState(null);
     const [showForm, setShowForm] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
@@ -19,8 +18,8 @@ const ProductManagement = () => {
     const fetchProducts = async () => {
         try {
             const productsData = await getProducts();
-            setProducts(productsData);
-            setFilteredProducts(productsData);
+            const list = productsData.content || [];
+            setProducts(list);  
         } catch (error) {
             console.error('Error fetching products:', error);
         }
@@ -61,18 +60,6 @@ const ProductManagement = () => {
         setShowForm(true);
     };
 
-    const handleSearch = (e) => {
-        const searchValue = e.target.value.toLowerCase();
-        setSearchTerm(searchValue);
-        setFilteredProducts(
-            products.filter(product => 
-                product.name.toLowerCase().includes(searchValue) ||
-                product.category.toLowerCase().includes(searchValue) ||
-                product.description.toLowerCase().includes(searchValue)
-            )
-        );
-    };
-
     return (
         <div className="p-4">
             <Navbar/>
@@ -82,7 +69,7 @@ const ProductManagement = () => {
                     type="text"
                     placeholder="Search Products"
                     value={searchTerm}
-                    onChange={handleSearch}
+                    onChange={(e) => setSearchTerm(e.target.value)}
                     className="border p-2"
                 />
                 <button 
@@ -101,7 +88,8 @@ const ProductManagement = () => {
                 />
             ) : (
                 <ProductList 
-                    products={filteredProducts}
+                    products={products}
+                    searchTerm={searchTerm}
                     onEdit={handleEditProduct}
                     onDelete={handleDeleteProduct}
                 />

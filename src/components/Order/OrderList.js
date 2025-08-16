@@ -1,56 +1,76 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { FaEllipsisV, FaEye, FaFilter } from 'react-icons/fa';
-import { getOrders } from '../../api/orderApi';
+import { getPaginationArg } from '../../api/orderApi';
+import Pagination from '../Pagination';
 
-const OrderList = ({ onShowDetails }) => {
+const OrderList = ({ searchTerm, onShowDetails }) => {
     const [orders, setOrders] = useState([]);
-    const [filteredOrders, setFilteredOrders] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
     const [showFilter, setShowFilter] = useState(false);
+    const [currentPage, setCurrentPage] = useState(0);
+    const [pageSize] = useState(10);
+
+
+    const fetchOrders = useCallback(async (page = currentPage) => {
+        setLoading(true);
+        try {
+            const { content} = await getPaginationArg(page, pageSize);
+            setOrders(content || []);
+        } catch (error) {
+            console.error('Erreur lors de la récupération des commandes:', error);
+            setError('Erreur lors de la récupération des commandes.');
+        } finally {
+            setLoading(false);
+        }
+    }, [currentPage, pageSize]);
 
     useEffect(() => {
-        const fetchOrders = async () => {
-            try {
-                const data = await getOrders();
-                setOrders(data);
-                setFilteredOrders(data);
-            } catch (error) {
-                console.error('Erreur lors de la récupération des commandes:', error);
-                setError('Erreur lors de la récupération des commandes.');
-            } finally {
-                setLoading(false);
-            }
-        };
-
         fetchOrders();
-    }, []);
+    }, [currentPage, fetchOrders]);
 
-    const handleFilter = () => {
-        const filtered = orders.filter(order => {
-            const orderDate = new Date(order.orderDate);
-            const start = startDate ? new Date(startDate) : null;
-            const end = endDate ? new Date(endDate) : null;
-            return (
-                (!start || orderDate >= start) &&
-                (!end || orderDate <= end)
-            );
-        });
-        setFilteredOrders(filtered);
+    const handleFilter = async () => {
+        setLoading(true);
+        try {
+            const { content } = await getPaginationArg(currentPage, pageSize);
+            const filtered = content.filter(order => {
+                const orderDate = new Date(order.orderDate);
+                const start = startDate ? new Date(startDate) : null;
+                const end = endDate ? new Date(endDate) : null;
+                return (!start || orderDate >= start) && (!end || orderDate <= end);
+            });
+            setOrders(filtered);
+        } catch (error) {
+            console.error('Erreur lors du filtrage des commandes:', error);
+            setError('Erreur lors du filtrage des commandes.');
+        } finally {
+            setLoading(false);
+        }
     };
 
     const resetFilter = () => {
         setStartDate('');
         setEndDate('');
-        setFilteredOrders(orders);
+        setCurrentPage(0);
+        fetchOrders(0);
     };
 
     const toggleFilter = () => setShowFilter(!showFilter);
 
     if (loading) return <p>Chargement...</p>;
     if (error) return <p>{error}</p>;
+
+  
+    const filteredOrders = orders.filter(order =>
+        (order.userName || '').toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
+
+    const startIndex = currentPage * pageSize;
+    const paginatedOrders = filteredOrders.slice(startIndex, startIndex + pageSize);
+    const totalPages = Math.ceil(filteredOrders.length / pageSize);
 
     return (
         <div className="py-4">
@@ -76,19 +96,23 @@ const OrderList = ({ onShowDetails }) => {
                                         value={startDate}
                                         onChange={(e) => setStartDate(e.target.value)}
                                         className="border p-2 rounded mr-2"
-                                        placeholder="Date de début"
                                     />
                                     <input
                                         type="date"
                                         value={endDate}
                                         onChange={(e) => setEndDate(e.target.value)}
                                         className="border p-2 rounded mr-2"
-                                        placeholder="Date de fin"
                                     />
-                                    <button onClick={handleFilter} className="bg-blue-500 text-white px-4 py-2 rounded mr-2">
+                                    <button
+                                        onClick={handleFilter}
+                                        className="bg-blue-500 text-white px-4 py-2 rounded mr-2"
+                                    >
                                         Filtrer
                                     </button>
-                                    <button onClick={resetFilter} className="bg-gray-500 text-white px-4 py-2 rounded">
+                                    <button
+                                        onClick={resetFilter}
+                                        className="bg-gray-500 text-white px-4 py-2 rounded"
+                                    >
                                         Réinitialiser
                                     </button>
                                 </div>
@@ -97,23 +121,35 @@ const OrderList = ({ onShowDetails }) => {
                     )}
                 </thead>
                 <tbody>
-                    {filteredOrders.map((order) => (
-                        <OrderRow
-                            key={order.id}
-                            order={order}
-                            onShowDetails={onShowDetails}
-                        />
-                    ))}
+                    {paginatedOrders.length === 0 ? (
+                        <tr>
+                            <td colSpan={4} className="text-center py-6 text-gray-500 italic">
+                                Aucun order trouvé.
+                            </td>
+                        </tr>
+                    ) : (
+                        paginatedOrders.map(order => (
+                            <OrderRow key={order.id} order={order} onShowDetails={onShowDetails} />
+                        ))
+                    )}
                 </tbody>
             </table>
+
+            <div className="flex justify-center mt-4">
+                <Pagination
+                    currentPage={currentPage}
+                    totalPages={totalPages}
+                    totalItems={filteredOrders.length}
+                    pageSize={pageSize}
+                    onPageChange={setCurrentPage}
+                />
+            </div>
         </div>
     );
 };
 
 const OrderRow = ({ order, onShowDetails }) => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
-
-    const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
     return (
         <tr>
@@ -122,7 +158,7 @@ const OrderRow = ({ order, onShowDetails }) => {
             <td className="text-center border-b p-4">{order.totalAmount} ar</td>
             <td className="text-center border-b p-4 relative">
                 <button
-                    onClick={toggleMenu}
+                    onClick={() => setIsMenuOpen(!isMenuOpen)}
                     className="bg-transparent text-black py-1 px-2 rounded focus:outline-none"
                 >
                     <FaEllipsisV />

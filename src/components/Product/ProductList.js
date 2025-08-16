@@ -1,37 +1,22 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { FaEllipsisV, FaEdit, FaTrash, FaFilter } from 'react-icons/fa';
-import { getProducts } from '../../api/productApi';
 import Pagination from '../Pagination';
 
-const ProductList = ({ onEdit, onDelete }) => {
-    const [products, setProducts] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
+const ProductList = ({ products, searchTerm, onEdit, onDelete }) => {
     const [filterCategory, setFilterCategory] = useState("");
     const [isFilterVisible, setIsFilterVisible] = useState(false);
     const [currentPage, setCurrentPage] = useState(0);
     const [pageSize] = useState(10);
-    const [totalItems, setTotalItems] = useState(0);
-    const [totalPages, setTotalPages] = useState(0);
 
-    useEffect(() => {
-        const fetchProducts = async () => {
-            setLoading(true);
-            try {
-                const { content, totalElements, totalPages } = await getProducts(currentPage, pageSize);
-                setProducts(content);
-                setTotalItems(totalElements);
-                setTotalPages(totalPages);
-            } catch (error) {
-                console.error('Erreur lors de la récupération des produits:', error);
-                setError('Erreur lors de la récupération des produits.');
-            } finally {
-                setLoading(false);
-            }
-        };
-        
-        fetchProducts();
-    }, [currentPage, pageSize]);
+    const filteredProducts = products.filter(product =>
+        (product.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        product.description?.toLowerCase().includes(searchTerm.toLowerCase())) &&
+        (filterCategory === "" || product.category?.toLowerCase().includes(filterCategory.toLowerCase()))
+    );
+
+    const totalItems = filteredProducts.length;
+    const totalPages = Math.ceil(totalItems / pageSize);
+    const paginatedProducts = filteredProducts.slice(currentPage * pageSize, (currentPage + 1) * pageSize);
 
     const toggleFilterVisibility = () => {
         setIsFilterVisible(!isFilterVisible);
@@ -42,9 +27,6 @@ const ProductList = ({ onEdit, onDelete }) => {
         setFilterCategory("");
         setCurrentPage(0);
     };
-
-    if (loading) return <p>Chargement...</p>;
-    if (error) return <p>{error}</p>;
 
     return (
         <div className="py-4">
@@ -82,7 +64,7 @@ const ProductList = ({ onEdit, onDelete }) => {
                     )}
                 </thead>
                 <tbody>
-                    {products.map((product) => (
+                    {paginatedProducts.map((product) => (
                         <ProductRow key={product.id} product={product} onEdit={onEdit} onDelete={onDelete} />
                     ))}
                 </tbody>
@@ -117,7 +99,7 @@ const ProductRow = ({ product, onEdit, onDelete }) => {
                 </button>
                 {isMenuOpen && (
                     <div className="absolute right-0 mt-2 bg-white border rounded shadow-lg z-10">
-                        <button onClick={() => onEdit(product.id)} className="flex items-center p-2 hover:bg-gray-200 w-full text-left">
+                        <button onClick={() => onEdit(product)} className="flex items-center p-2 hover:bg-gray-200 w-full text-left">
                             <FaEdit className="mr-1" /> Edit
                         </button>
                         <button onClick={() => onDelete(product.id)} className="flex items-center p-2 hover:bg-gray-200 w-full text-left">

@@ -1,46 +1,21 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Pagination from '../Pagination';
 import { FaEllipsisV, FaEdit, FaEye, FaTrash } from 'react-icons/fa';
-import { getUsers } from '../../api/userApi';  
 
-const UserList = ({ onEdit, onDelete, onShow }) => {
-  const [users, setUsers] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
+const UserList = ({ users, onEdit, onDelete, onShow }) => {
   const [currentPage, setCurrentPage] = useState(0);
-  const [pageSize] = useState(10);
-  const [totalItems, setTotalItems] = useState(0);
-  const [totalPages, setTotalPages] = useState(0);
+  const pageSize = 10;
 
-  useEffect(() => {
-    const fetchUsers = async () => {
-      setLoading(true);
-      setError(null);
-      try {
-        const { content, totalElements, totalPages } = await getUsers(currentPage, pageSize);
-        setUsers(content);
-        setTotalItems(totalElements);
-        setTotalPages(totalPages);
-      } catch {
-        setError("Erreur lors de la récupération des utilisateurs.");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchUsers();
-  }, [currentPage, pageSize]);
-
-  if (loading) return <p className="text-center py-10">Chargement...</p>;
-  if (error) return <p className="text-center py-10 text-red-600">{error}</p>;
+  const startIndex = currentPage * pageSize;
+  const paginatedUsers = users.slice(startIndex, startIndex + pageSize);
+  const totalPages = Math.ceil(users.length / pageSize);
 
   return (
     <div className="py-4 px-2 md:px-6">
       <table className="min-w-full border-collapse bg-white shadow-md rounded overflow-hidden">
         <thead className="bg-gray-100">
           <tr>
-            {['USER NAME', 'EMAIL', 'ROLE', 'IMAGE', 'ACTIONS'].map((header) => (
+            {['USER NAME', 'EMAIL', 'ROLE', 'IMAGE', 'ACTIONS'].map(header => (
               <th key={header} className="text-center border-b border-gray-300 p-4 text-gray-700 font-semibold text-sm">
                 {header}
               </th>
@@ -48,20 +23,20 @@ const UserList = ({ onEdit, onDelete, onShow }) => {
           </tr>
         </thead>
         <tbody>
-          {users.length === 0 ? (
+          {paginatedUsers.length === 0 ? (
             <tr>
               <td colSpan={5} className="text-center py-6 text-gray-500 italic">
                 Aucun utilisateur trouvé.
               </td>
             </tr>
           ) : (
-            users.map(user => (
-              <UserRow 
-                key={user.id} 
-                user={user} 
-                onEdit={onEdit} 
-                onDelete={onDelete} 
-                onShow={onShow} 
+            paginatedUsers.map(user => (
+              <UserRow
+                key={user.id}
+                user={user}
+                onEdit={onEdit}
+                onDelete={onDelete}
+                onShow={onShow}
               />
             ))
           )}
@@ -71,7 +46,7 @@ const UserList = ({ onEdit, onDelete, onShow }) => {
       <div className="flex justify-center mt-6">
         <Pagination
           currentPage={currentPage}
-          totalItems={totalItems}
+          totalItems={users.length}
           totalPages={totalPages}
           pageSize={pageSize}
           onPageChange={setCurrentPage}
@@ -109,22 +84,13 @@ const UserRow = ({ user, onEdit, onDelete, onShow }) => {
         </button>
         {isMenuOpen && (
           <div className="absolute right-0 mt-2 w-32 bg-white border border-gray-200 rounded shadow-lg z-20">
-            <button
-              onClick={() => { onEdit(user); setIsMenuOpen(false); }}
-              className="flex items-center gap-2 p-2 w-full hover:bg-gray-100 text-gray-700 text-sm"
-            >
+            <button onClick={() => { onEdit(user); setIsMenuOpen(false); }} className="flex items-center gap-2 p-2 w-full hover:bg-gray-100 text-gray-700 text-sm">
               <FaEdit /> Edit
             </button>
-            <button
-              onClick={() => { user.id ? onShow(user.id) : console.error("User ID is null or undefined"); setIsMenuOpen(false); }}
-              className="flex items-center gap-2 p-2 w-full hover:bg-gray-100 text-gray-700 text-sm"
-            >
+            <button onClick={() => { onShow(user.id); setIsMenuOpen(false); }} className="flex items-center gap-2 p-2 w-full hover:bg-gray-100 text-gray-700 text-sm">
               <FaEye /> Show
             </button>
-            <button
-              onClick={() => { onDelete(user.id); setIsMenuOpen(false); }}
-              className="flex items-center gap-2 p-2 w-full hover:bg-gray-100 text-red-600 text-sm"
-            >
+            <button onClick={() => { onDelete(user.id); setIsMenuOpen(false); }} className="flex items-center gap-2 p-2 w-full hover:bg-gray-100 text-red-600 text-sm">
               <FaTrash /> Delete
             </button>
           </div>
